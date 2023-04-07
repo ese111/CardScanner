@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
+import com.example.cardinfoscanner.Destination.Companion.resultRout
+import com.example.cardinfoscanner.ResultDestination.routeWithArgs
 
 @Composable
 fun CameraGraph(
@@ -21,18 +23,8 @@ fun CameraGraph(
         composable(route = cameraRoute) {
             CameraDestination.screen(navController, it.arguments)
         }
+        composable(route = routeWithArgs, arguments = ResultDestination.arguments) {
+            ResultDestination.screen(navController, it.arguments)
+        }
     }
 }
-//
-//@Stable
-//fun NavGraphBuilder.permissionGraph(
-//    navController: NavHostController,
-//    startDestination: String,
-//    route: String
-//) {
-//    navigation(startDestination = startDestination, route = route) {
-//        composable(route = route) {
-//            PermissionDestination.screen(navController, it.arguments)
-//        }
-//    }
-//}

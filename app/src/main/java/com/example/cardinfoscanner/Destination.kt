@@ -11,6 +11,7 @@ interface Destination {
     companion object {
         internal const val permissionRoute = "home/permission"
         internal const val cameraRoute = "home/camera"
+        internal const val resultRout = "result"
     }
 }
 

@@ -7,7 +7,6 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         popUpTo(route) {
             saveState = true
         }
-
         launchSingleTop = true
         restoreState = true
     }
