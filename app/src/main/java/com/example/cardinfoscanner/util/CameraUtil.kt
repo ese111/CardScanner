@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.MediaActionSound
 import android.os.Build
 import android.provider.Telephony.Mms.Part.FILENAME
+import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import com.example.cardinfoscanner.getOutputDirectory
@@ -21,7 +22,6 @@ fun takePicture(
 ) : String {
     MediaActionSound().play(MediaActionSound.SHUTTER_CLICK) // 셔터 소리
     val outputDirectory = context.getOutputDirectory()
-    // Create output file to hold the image
     val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputDirectory).build()
     var value = ""
     imageCapture.takePicture(outputFileOptions, executorService,
@@ -32,7 +32,10 @@ fun takePicture(
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                 outputFileResults.savedUri?.let {
                     recognizeText(InputImage.fromFilePath(context, it))
-                        .addOnCompleteListener { task -> navToResult(task.result.text) }
+                        .addOnSuccessListener { task ->
+                            Log.i("흥수", task.text)
+                            navToResult(task.text)
+                        }
                 }
             }
         })

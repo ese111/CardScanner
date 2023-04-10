@@ -1,5 +1,7 @@
 package com.example.cardinfoscanner
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -14,17 +16,21 @@ import com.example.cardinfoscanner.ResultDestination.routeWithArgs
 fun CameraGraph(
     navController: NavHostController,
     startDestination: String,
-    modifier: Modifier
+    modifier: Modifier,
+    paddingValues: PaddingValues
 ) {
-    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier.padding(paddingValues)) {
         composable(route = permissionRoute) {
-            PermissionDestination.screen(navController, it.arguments)
+            PermissionDestination.screen(navController, it.arguments, paddingValues)
         }
         composable(route = cameraRoute) {
-            CameraDestination.screen(navController, it.arguments)
+            CameraDestination.screen(navController, it.arguments, paddingValues)
         }
         composable(route = routeWithArgs, arguments = ResultDestination.arguments) {
-            ResultDestination.screen(navController, it.arguments)
+            ResultDestination.screen(navController, it.arguments, paddingValues)
+        }
+        composable(route = ErrorDestination.routeWithArgs, arguments = ErrorDestination.arguments) {
+            ErrorDestination.screen(navController, it.arguments, paddingValues)
         }
     }
 }

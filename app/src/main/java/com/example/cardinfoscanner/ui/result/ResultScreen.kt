@@ -14,10 +14,11 @@ import com.example.cardinfoscanner.state.ResultState
 
 @Composable
 fun ResultScreen(
-    state: ResultState
+    state: ResultState,
+    modifier: Modifier
 ) {
     Column(
-        modifier = Modifier,
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -32,5 +33,5 @@ fun ResultScreen(
 @Preview(showBackground = true)
 @Composable
 fun ResultScreenPreview() {
-    ResultScreen(state = ResultState("면허증 ㅇ나어ㅏㅁ"))
+    ResultScreen(state = ResultState("면허증 ㅇ나어ㅏㅁ"), Modifier)
 }
