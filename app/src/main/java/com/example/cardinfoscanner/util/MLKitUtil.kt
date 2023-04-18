@@ -17,16 +17,6 @@ fun recognizeText(image: InputImage): Task<Text> {
     return koreanRecognizer.process(image)
 }
 
-fun scanBarcode(image: InputImage): Task<List<Barcode>> {
-    val options = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(
-            Barcode.FORMAT_QR_CODE
-        ).enableAllPotentialBarcodes()
-        .build()
-    val scanner = BarcodeScanning.getClient()
-    return scanner.process(image)
-}
-
 private fun processTextBlock(result: Text) {
     // [START mlkit_process_text_block]
     val resultText = result.text

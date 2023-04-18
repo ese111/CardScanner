@@ -7,17 +7,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ErrorScreen(
-    title: String,
-    modifier: Modifier
+    title: String
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = modifier
+        modifier = Modifier
     ) {
         Text(text = "$title Error")
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorPreView() {
+    ErrorScreen(title = "UnKnow")
 }

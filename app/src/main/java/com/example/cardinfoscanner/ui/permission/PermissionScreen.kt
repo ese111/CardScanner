@@ -16,8 +16,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FeatureThatRequiresCameraPermission(
-    moveToNext: () -> Unit,
-    modifier: Modifier
+    moveToNext: () -> Unit
 ) {
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
