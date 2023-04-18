@@ -27,14 +27,21 @@ fun takePicture(
     imageCapture.takePicture(outputFileOptions, executorService,
         object : ImageCapture.OnImageSavedCallback {
             override fun onError(error: ImageCaptureException) {
+                Log.i("흥수", "sad ${error.message}")
                 value = "fail"
             }
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                Log.i("흥수", "sa ${outputFileResults.savedUri.toString()}")
                 outputFileResults.savedUri?.let {
+                    Log.i("흥수", it.toString())
                     recognizeText(InputImage.fromFilePath(context, it))
                         .addOnSuccessListener { task ->
                             Log.i("흥수", task.text)
                             navToResult(task.text)
+                        }.addOnCompleteListener { task ->
+                            Log.i("흥수", task.result.text)
+                        }.addOnFailureListener {
+                            Log.i("흥수", it.message.toString())
                         }
                 }
             }

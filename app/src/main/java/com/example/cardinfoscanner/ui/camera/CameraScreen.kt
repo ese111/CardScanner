@@ -29,6 +29,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.cardinfoscanner.util.takePicture
 import com.google.mlkit.vision.barcode.BarcodeScanner
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
@@ -39,14 +40,24 @@ import java.util.concurrent.Executors
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
 fun CameraPreViewScreen(
     navToResult: (String) -> Unit,
-    cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor(),
-    imageCapture: ImageCapture = ImageCapture.Builder().build(),
-    scanner: BarcodeScanner = BarcodeScanning.getClient()
+//    cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor(),
+//    imageCapture: ImageCapture = ImageCapture.Builder().build(),
+//    scanner: BarcodeScanner = BarcodeScanning.getClient()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-
+    val imageCapture = remember { ImageCapture.Builder().build() }
+    val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
+    val scanner = remember {
+        val options = BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(
+                Barcode.FORMAT_QR_CODE
+            ).enableAllPotentialBarcodes()
+            .build()
+        BarcodeScanning.getClient(options)
+    }
+    Log.i("AppTest", "imageCapture : ${imageCapture.hashCode()} scanner ${scanner.hashCode()}")
     Column(
         modifier = Modifier,
         verticalArrangement = Arrangement.Center,
@@ -120,7 +131,9 @@ fun CameraPreViewScreen(
                 .fillMaxWidth()
                 .height(600.dp),
         )
-        Spacer(modifier = Modifier.fillMaxWidth().height(30.dp))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(30.dp))
         CameraButton(
             context = context,
             cameraExecutor = cameraExecutor,
@@ -177,7 +190,7 @@ private fun CameraPreview() {
         Spacer(modifier = Modifier
             .weight(1f)
             .background(Color.Red))
-        CameraButton() {}
+        CameraButton {}
         Spacer(modifier = Modifier.weight(1f))
     }
 }

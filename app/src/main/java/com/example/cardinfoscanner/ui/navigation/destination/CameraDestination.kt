@@ -38,9 +38,6 @@ object CameraDestination: Destination {
                 ).enableAllPotentialBarcodes()
                 .build()
             CameraPreViewScreen(
-                cameraExecutor = Executors.newSingleThreadExecutor(),
-                imageCapture = ImageCapture.Builder().build(),
-                scanner = BarcodeScanning.getClient(options),
                 navToResult = { state ->
                     Log.i("흥수", state)
                     if(state.isNotEmpty()) {

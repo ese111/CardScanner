@@ -3,7 +3,9 @@ package com.example.cardinfoscanner
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        onBackPressedDispatcher.addCallback { finish() }
     }
 }
 fun Context.getOutputDirectory(): File {
