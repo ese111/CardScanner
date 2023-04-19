@@ -13,9 +13,11 @@ import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.errorRout
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.Destination.Companion.resultRout
+import com.example.cardinfoscanner.navigateClearTo
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.state.ResultState
 import com.example.cardinfoscanner.state.rememberCameraScreenState
+import com.example.cardinfoscanner.state.rememberResultState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
 import com.example.cardinfoscanner.ui.camera.CameraViewModel
 import com.example.cardinfoscanner.ui.error.ErrorScreen
@@ -31,12 +33,6 @@ object CameraDestination: Destination {
     override val route = cameraRoute
     override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
         navController.currentBackStackEntry?.let {
-            val viewModel: CameraViewModel = hiltViewModel(it)
-            val options = BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(
-                    Barcode.FORMAT_QR_CODE
-                ).enableAllPotentialBarcodes()
-                .build()
             CameraPreViewScreen(
                 navToResult = { state ->
                     Log.i("흥수", state)
@@ -46,7 +42,8 @@ object CameraDestination: Destination {
                         return@CameraPreViewScreen
                     }
                     navController.navigateSingleTopTo("${ErrorDestination.route}/result")
-                }
+                },
+                navToPermission = { navController.navigateClearTo(permissionRoute) }
             )
         }
     }
@@ -56,7 +53,7 @@ object PermissionDestination: Destination {
     override val route = permissionRoute
     override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
         navController.currentBackStackEntry?.let {
-            FeatureThatRequiresCameraPermission(moveToNext = { navController.navigateSingleTopTo(cameraRoute) })
+            FeatureThatRequiresCameraPermission(moveToNext = { navController.navigateClearTo(cameraRoute) })
         }
     }
 }
@@ -72,7 +69,7 @@ object ResultDestination: Destination {
         navController.currentBackStackEntry?.let {
             bundle?.getString(resultKey)?.let {
                 val str = it.replace("+", "/")
-                ResultScreen(state = ResultState(str))
+                ResultScreen(text = str)
             }
         }
     }

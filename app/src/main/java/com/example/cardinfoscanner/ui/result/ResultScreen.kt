@@ -20,7 +20,7 @@ import com.example.cardinfoscanner.state.ResultState
 
 @Composable
 fun ResultScreen(
-    state: ResultState
+    text: String
 ) {
     Column(
         modifier = Modifier.padding(12.dp),
@@ -35,7 +35,7 @@ fun ResultScreen(
         )
         Spacer(modifier = Modifier.height(20.dp).fillMaxWidth())
         Text(
-            text = state.uiState,
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
@@ -47,6 +47,6 @@ fun ResultScreen(
 @Composable
 fun ResultScreenPreview() {
     Scaffold() {
-        ResultScreen(state = ResultState("면허증 ㅇ나어ㅏㅁ"))
+        ResultScreen(text = "면허증 ㅇ나어ㅏㅁ")
     }
 }

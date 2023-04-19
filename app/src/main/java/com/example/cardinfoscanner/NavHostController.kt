@@ -10,3 +10,11 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         launchSingleTop = true
         restoreState = true
     }
+fun NavHostController.navigateClearTo(route: String) =
+    navigate(route) {
+        popUpTo(route) {
+            inclusive = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
