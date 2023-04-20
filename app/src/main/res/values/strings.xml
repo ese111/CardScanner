@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CardInfoScanner</string>
+    <string name="bottom_navigation_note_list_title">List</string>
+    <string name="bottom_navigation_scan_title">Scan</string>
+    <string name="bottom_navigation_settings_title">Setting</string>
+
 </resources>
