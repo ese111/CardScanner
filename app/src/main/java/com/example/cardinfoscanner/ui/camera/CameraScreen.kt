@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,10 +22,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,9 +35,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import com.example.cardinfoscanner.state.ResultState
 import com.example.cardinfoscanner.ui.common.CardSnackBar
+import com.example.cardinfoscanner.ui.common.NormalDialog
 import com.example.cardinfoscanner.util.takePicture
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -46,6 +45,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -54,7 +54,7 @@ import java.util.concurrent.Executors
 @Composable
 fun CameraPreViewScreen(
     navToResult: (String) -> Unit,
-    navToPermission: () -> Unit,
+    navToPermission: () -> Unit
 ) {
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
@@ -65,7 +65,9 @@ fun CameraPreViewScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val imageCapture = remember { ImageCapture.Builder().build() }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
-
+    val scope = rememberCoroutineScope()
+    var value by remember { mutableStateOf("") }
+    var dialogState by remember { mutableStateOf(false) }
 
     Scaffold(
         snackbarHost = {
@@ -79,6 +81,20 @@ fun CameraPreViewScreen(
             Text(text = "Card Scanner", modifier = Modifier.padding(18.dp))
         }
     ) { paddingValues ->
+        if(dialogState) {
+            NormalDialog(
+                title = "아래 내용을 저장하시겠습니까?",
+                phrase = value,
+                confirmText = "확인",
+                dismissText = "취소",
+                onConfirm = {
+                    navToResult(value)
+                },
+                onDismiss = {
+                    dialogState = false
+                }
+            )
+        }
         Column(
             modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,
@@ -86,16 +102,30 @@ fun CameraPreViewScreen(
         ) {
             CameraPreView(
                 imageCapture = imageCapture,
-                navToResult = navToResult,
+                showDialog = {
+                    value = it
+                    dialogState = true
+                },
                 snackBarHostState = snackBarHostState,
+                scope = scope
             )
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+            )
             CameraButton(
                 cameraExecutor = cameraExecutor,
                 imageCapture = imageCapture,
-                onClick = navToResult
+                onClick = {
+                    value = it
+                    dialogState = true
+                },
+                showErrorSnackBar = { error ->
+                    scope.launch {
+                        snackBarHostState.showSnackbar(error)
+                    }
+                }
             )
         }
     }
@@ -105,8 +135,9 @@ fun CameraPreViewScreen(
 @Composable
 private fun CameraPreView(
     imageCapture: ImageCapture,
-    navToResult: (String) -> Unit,
+    showDialog: (String) -> Unit,
     snackBarHostState: SnackbarHostState,
+    scope: CoroutineScope
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val scanner = remember {
@@ -117,7 +148,7 @@ private fun CameraPreView(
             .build()
         BarcodeScanning.getClient(options)
     }
-    val scope = rememberCoroutineScope()
+
     AndroidView(
         factory = { ctx ->
             val previewView = PreviewView(ctx)
@@ -137,9 +168,12 @@ private fun CameraPreView(
                 val myAnalyzer = ImageAnalysis.Analyzer { imageProxy ->
                     val mediaImage = imageProxy.image
                     mediaImage?.let {
-                        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                        val image = InputImage.fromMediaImage(
+                            mediaImage,
+                            imageProxy.imageInfo.rotationDegrees
+                        )
                         scanner.process(image).addOnSuccessListener { list ->
-                            list.forEach {  barcode ->
+                            list.forEach { barcode ->
                                 when (barcode.valueType) {
                                     Barcode.TYPE_WIFI -> {
                                         val ssid = barcode.wifi!!.ssid
@@ -148,14 +182,15 @@ private fun CameraPreView(
                                         Log.i("CardScanner", "$ssid")
                                         Log.i("CardScanner", "$password")
                                         Log.i("CardScanner", "$type")
-
+                                        barcode.wifi?.let { showDialog(it.toString()) }
                                     }
+
                                     Barcode.TYPE_URL -> {
                                         val title = barcode.url!!.title
                                         val url = barcode.url!!.url
                                         Log.i("CardScanner", "title $title")
                                         Log.i("CardScanner", "url $url")
-                                        navToResult(url.toString())
+                                        url?.let { showDialog(it) }
                                     }
                                 }
                             }
@@ -197,7 +232,8 @@ private fun CameraPreView(
 private fun CameraButton(
     imageCapture: ImageCapture = ImageCapture.Builder().build(),
     cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor(),
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
+    showErrorSnackBar: (String) -> Unit
 ) {
     val context = LocalContext.current
     Button(
@@ -206,7 +242,8 @@ private fun CameraButton(
                 context = context,
                 imageCapture = imageCapture,
                 executorService = cameraExecutor,
-                navToResult = onClick
+                showResultDialog = onClick,
+                showErrorSnackBar = showErrorSnackBar
             )
         },
         modifier = Modifier
@@ -214,7 +251,11 @@ private fun CameraButton(
             .width(80.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
     ) {
-        Icon(imageVector = Icons.Default.Done, contentDescription = null, modifier = Modifier.fillMaxSize())
+        Icon(
+            imageVector = Icons.Default.Done,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -236,10 +277,12 @@ private fun CameraPreview() {
                 .background(Color.Blue)
                 .height(700.dp),
         )
-        Spacer(modifier = Modifier
-            .weight(1f)
-            .background(Color.Red))
-        CameraButton {}
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color.Red)
+        )
+        CameraButton(onClick = {}, showErrorSnackBar = {})
         Spacer(modifier = Modifier.weight(1f))
     }
 }

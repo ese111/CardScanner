@@ -1,4 +1,4 @@
-package com.example.cardinfoscanner.state
+package com.example.cardinfoscanner.state.camera
 
 import androidx.camera.core.ImageCapture
 import androidx.compose.runtime.*

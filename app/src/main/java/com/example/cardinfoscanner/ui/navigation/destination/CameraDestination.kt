@@ -2,9 +2,7 @@ package com.example.cardinfoscanner.ui.navigation.destination
 
 import android.os.Bundle
 import android.util.Log
-import androidx.camera.core.ImageCapture
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -15,18 +13,10 @@ import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.Destination.Companion.resultRout
 import com.example.cardinfoscanner.navigateClearTo
 import com.example.cardinfoscanner.navigateSingleTopTo
-import com.example.cardinfoscanner.state.ResultState
-import com.example.cardinfoscanner.state.rememberCameraScreenState
-import com.example.cardinfoscanner.state.rememberResultState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
-import com.example.cardinfoscanner.ui.camera.CameraViewModel
 import com.example.cardinfoscanner.ui.error.ErrorScreen
 import com.example.cardinfoscanner.ui.permission.FeatureThatRequiresCameraPermission
 import com.example.cardinfoscanner.ui.result.ResultScreen
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import java.util.concurrent.Executors
 
 
 object CameraDestination: Destination {
