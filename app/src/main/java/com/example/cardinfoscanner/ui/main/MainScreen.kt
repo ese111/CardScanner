@@ -35,6 +35,7 @@ import com.example.cardinfoscanner.Destination.Companion.settingHomeRout
 import com.example.cardinfoscanner.Destination.Companion.settingRout
 import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.navigateSingleTopTo
+import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.ui.navigation.graph.cameraGraph
 import com.example.cardinfoscanner.ui.navigation.graph.noteGraph
 import com.example.cardinfoscanner.ui.navigation.graph.settingGraph
@@ -79,7 +80,7 @@ fun CardScannerApp() {
                                 stringResource(id = item.title),
                                 fontFamily = FontFamily.SansSerif,
                                 fontWeight = FontWeight.Normal,
-                                fontSize = 8.sp
+                                fontSize = 11.sp
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -88,9 +89,7 @@ fun CardScannerApp() {
                         ),
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         alwaysShowLabel = false,
-                        onClick = {
-                            navController.navigateSingleTopTo(item.route)
-                        }
+                        onClick = { navController.navigateSingleTopToGraph(item.route) }
                     )
                 }
             }
@@ -98,18 +97,19 @@ fun CardScannerApp() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = cameraHomeRoute,
+            startDestination = noteHomeRout,
             modifier = Modifier.padding(paddingValues)
+
         ) {
-            cameraGraph(
-                navController = navController,
-                startDestination = cameraRoute,
-                route = cameraHomeRoute
-            )
             noteGraph(
                 navController = navController,
                 startDestination = noteListRout,
                 route = noteHomeRout
+            )
+            cameraGraph(
+                navController = navController,
+                startDestination = cameraRoute,
+                route = cameraHomeRoute
             )
             settingGraph(
                 navController = navController,

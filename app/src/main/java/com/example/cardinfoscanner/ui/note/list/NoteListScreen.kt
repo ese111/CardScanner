@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.cardinfoscanner.stateholder.note.Note
 import com.example.cardinfoscanner.stateholder.note.NoteListState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteListState
+import com.example.cardinfoscanner.ui.common.TopAppBar
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -29,8 +32,9 @@ fun NoteListScreen(
 ) {
     Scaffold(
         topBar = {
-            Text(modifier = Modifier.padding(16.dp), text = "Notes")
-        }
+            TopAppBar(title = "Note")
+        },
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             items(items = state.noteList.value, key = { note -> note.id }) { item ->
@@ -45,23 +49,33 @@ fun NoteItem(
     modifier: Modifier = Modifier,
     note: Note
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.weight(3f)
+    Column {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = note.title)
-            Text(text = note.content, overflow = TextOverflow.Ellipsis, maxLines = 2)
+            Column(
+                modifier = Modifier.weight(3f)
+            ) {
+                Text(text = note.title)
+                Text(text = note.content, overflow = TextOverflow.Ellipsis, maxLines = 2)
+            }
+            Spacer(
+                modifier = Modifier
+                    .weight(0.5f)
+            )
+            Text(text = note.date, modifier = Modifier.weight(1f))
         }
-        Spacer(modifier = Modifier
-            .weight(1f)
-            .background(Color.Red))
-        Text(text = note.date, modifier = Modifier.weight(1f))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(start = 16.dp, end = 16.dp)
+                .background(Color.LightGray)
+        )
     }
 }
 

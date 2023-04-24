@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.cardinfoscanner.stateholder.camera.CameraScreenState
 import com.example.cardinfoscanner.ui.common.CardSnackBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
+import com.example.cardinfoscanner.ui.common.TopAppBar
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -57,7 +58,7 @@ fun CameraPreViewScreen(
             }
         },
         topBar = {
-            Text(text = "Card Scanner", modifier = Modifier.padding(18.dp))
+            TopAppBar(title = "Card Scanner")
         }
     ) { paddingValues ->
         if (dialogState.value) {
