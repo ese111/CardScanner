@@ -51,7 +51,8 @@ object CameraDestination : Destination {
                 takePicture = cameraUtil::takePicture,
                 dialogState = dialogState,
                 cameraState = cameraState,
-                snackbarHostState = snackBarHostState
+                snackbarHostState = snackBarHostState,
+                onUpButtonClick = navController::navigateUp
             )
         }
     }

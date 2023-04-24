@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -40,7 +39,8 @@ fun CameraPreViewScreen(
     cameraUtil: CameraUtil,
     navToResult: (String) -> Unit,
     navToPermission: () -> Unit,
-    takePicture: () -> Unit
+    takePicture: () -> Unit,
+    onUpButtonClick: () -> Unit
 ) {
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
@@ -58,7 +58,7 @@ fun CameraPreViewScreen(
             }
         },
         topBar = {
-            TopAppBar(title = "Card Scanner")
+            TopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
         }
     ) { paddingValues ->
         if (dialogState.value) {
@@ -87,7 +87,7 @@ fun CameraPreViewScreen(
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(30.dp)
+                    .height(40.dp)
             )
             CameraButton(
                 onClick = takePicture
@@ -121,15 +121,11 @@ private fun CameraButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .height(80.dp)
-            .width(80.dp),
+            .height(60.dp)
+            .width(60.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
     ) {
-        Icon(
-            imageVector = Icons.Default.Done,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
+
     }
 }
 
