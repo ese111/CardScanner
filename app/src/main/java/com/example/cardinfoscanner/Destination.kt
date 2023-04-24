@@ -11,13 +11,13 @@ interface Destination {
     val screen: @Composable (navController: NavHostController, arguments: Bundle) -> Unit
 
     companion object {
-        internal const val cameraHomeRoute = "home/camera"
-        internal const val permissionRoute = "home/camera/permission"
-        internal const val cameraRoute = "home/camera/scan"
-        internal const val resultHomeRout = "home/result"
-        internal const val resultRout = "home/result/view"
-        internal const val errorHomeRout = "home/error"
-        internal const val errorRout = "home/error/view"
+        internal const val cameraHomeRoute = "home/cam"
+        internal const val permissionRoute = "home/cam/permission"
+        internal const val cameraRoute = "home/cam/scan"
+        internal const val noteHomeRout = "home/note"
+        internal const val noteListRout = "home/note/list"
+        internal const val settingHomeRout = "home/setting"
+        internal const val settingRout = "home/setting/main"
     }
 }
 

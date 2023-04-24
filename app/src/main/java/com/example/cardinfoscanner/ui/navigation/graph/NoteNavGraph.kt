@@ -5,18 +5,18 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.cardinfoscanner.ui.navigation.destination.ErrorDestination
-import com.example.cardinfoscanner.ui.navigation.destination.ResultDestination
+import com.example.cardinfoscanner.Destination
+import com.example.cardinfoscanner.ui.navigation.destination.NotesDestination
 
 @Stable
-fun NavGraphBuilder.errorGraph(
+fun NavGraphBuilder.noteGraph(
     navController: NavHostController,
     startDestination: String,
     route: String
 ) {
     navigation(startDestination = startDestination, route = route) {
-        composable(route = ErrorDestination.routeWithArgs, arguments = ErrorDestination.arguments) {
-            ErrorDestination.screen(navController, it.arguments)
+        composable(route = Destination.noteListRout) {
+            NotesDestination.screen(navController, it.arguments)
         }
     }
 }

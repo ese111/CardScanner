@@ -5,13 +5,10 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,16 +27,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cardinfoscanner.Destination
+import com.example.cardinfoscanner.Destination.Companion.cameraHomeRoute
+import com.example.cardinfoscanner.Destination.Companion.cameraRoute
+import com.example.cardinfoscanner.Destination.Companion.noteHomeRout
+import com.example.cardinfoscanner.Destination.Companion.noteListRout
+import com.example.cardinfoscanner.Destination.Companion.settingHomeRout
+import com.example.cardinfoscanner.Destination.Companion.settingRout
 import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.ui.navigation.graph.cameraGraph
-import com.example.cardinfoscanner.ui.navigation.graph.errorGraph
-import com.example.cardinfoscanner.ui.navigation.graph.resultGraph
+import com.example.cardinfoscanner.ui.navigation.graph.noteGraph
+import com.example.cardinfoscanner.ui.navigation.graph.settingGraph
 
 enum class BottomNavItem(val route: String, @DrawableRes val icon: Int, @StringRes val title: Int) {
-    Notes("", R.drawable.ic_note_list_bulleted, R.string.bottom_navigation_note_list_title),
-    Scan("", R.drawable.ic_camera, R.string.bottom_navigation_scan_title),
-    Setting("", R.drawable.ic_settings, R.string.bottom_navigation_settings_title)
+    Notes(noteListRout, R.drawable.ic_note_list_bulleted, R.string.bottom_navigation_note_list_title),
+    Scan(cameraRoute, R.drawable.ic_camera, R.string.bottom_navigation_scan_title),
+    Setting(settingRout, R.drawable.ic_settings, R.string.bottom_navigation_settings_title)
 }
 
 @Composable
@@ -84,7 +87,7 @@ fun CardScannerApp() {
                             unselectedIconColor = Color.Gray
                         ),
                         selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                        alwaysShowLabel = true,
+                        alwaysShowLabel = false,
                         onClick = {
                             navController.navigateSingleTopTo(item.route)
                         }
@@ -95,23 +98,23 @@ fun CardScannerApp() {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Destination.cameraHomeRoute,
+            startDestination = cameraHomeRoute,
             modifier = Modifier.padding(paddingValues)
         ) {
             cameraGraph(
                 navController = navController,
-                startDestination = Destination.cameraRoute,
-                route = Destination.cameraHomeRoute
+                startDestination = cameraRoute,
+                route = cameraHomeRoute
             )
-            resultGraph(
+            noteGraph(
                 navController = navController,
-                startDestination = Destination.resultRout,
-                route = Destination.resultHomeRout
+                startDestination = noteListRout,
+                route = noteHomeRout
             )
-            errorGraph(
+            settingGraph(
                 navController = navController,
-                startDestination = Destination.errorRout,
-                route = Destination.errorHomeRout
+                startDestination = settingRout,
+                route = settingHomeRout
             )
         }
     }

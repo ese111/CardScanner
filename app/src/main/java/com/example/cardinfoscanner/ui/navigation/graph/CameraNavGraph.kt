@@ -9,6 +9,8 @@ import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.ui.navigation.destination.CameraDestination
 import com.example.cardinfoscanner.ui.navigation.destination.PermissionDestination
+import com.example.cardinfoscanner.util.CameraUtil
+import javax.inject.Inject
 
 @Stable
 fun NavGraphBuilder.cameraGraph(

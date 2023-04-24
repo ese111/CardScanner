@@ -23,42 +23,28 @@ import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 
-sealed class CallBack {
-    data class OnCaptureSuccessListener(val callback: (String) -> Unit) : CallBack()
-    data class OnBarcodeScanSuccessListener(val callback: (String) -> Unit) : CallBack()
-    data class OnCaptureErrorListener(val callback: (String) -> Unit) : CallBack()
-    data class OnBarcodeScanErrorListener(val callback: (String) -> Unit) : CallBack()
-}
 class CameraUtil(
     private val context: Context,
 ) {
-    private var onCaptureSuccessListener: ((String) -> Unit)? = null
-    private var onBarcodeScanSuccessListener: ((String) -> Unit)? = null
-    private var onCaptureErrorListener:((String) -> Unit)? = null
-    private var onBarcodeScanErrorListener:((String) -> Unit)? = null
+    enum class CallBackType {
+        ON_SUCCESS, ON_FAIL
+    }
     private val imageCapture = ImageCapture.Builder().build()
     private val executor = ContextCompat.getMainExecutor(context)
-    private fun Context.getOutputDirectory() = File(externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
-    fun setCallback(callback: CallBack) = when(callback) {
-        is CallBack.OnBarcodeScanErrorListener -> {
-            onCaptureSuccessListener = callback.callback
-            this
-        }
-        is CallBack.OnBarcodeScanSuccessListener -> {
-            onBarcodeScanSuccessListener = callback.callback
-            this
-        }
-        is CallBack.OnCaptureErrorListener -> {
-            onCaptureErrorListener = callback.callback
-            this
-        }
-        is CallBack.OnCaptureSuccessListener -> {
-            onBarcodeScanErrorListener = callback.callback
-            this
-        }
+    private val callBacks = hashMapOf<CallBackType, (String) -> Unit>()
+    private fun Context.getOutputDirectory() =
+        File(externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
+
+    internal fun addSuccessCallBack(callBack: (String) -> Unit): CameraUtil {
+        callBacks[CallBackType.ON_SUCCESS] = callBack
+        return this
     }
 
-    fun takePicture() {
+    internal fun addErrorCallBack(callBack: (String) -> Unit): CameraUtil {
+        callBacks[CallBackType.ON_FAIL] = callBack
+        return this
+    }
+    internal fun takePicture() {
         MediaActionSound().play(MediaActionSound.SHUTTER_CLICK) // 셔터 소리
         val outputDirectory = context.getOutputDirectory()
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputDirectory).build()
@@ -67,6 +53,7 @@ class CameraUtil(
                 override fun onError(error: ImageCaptureException) {
                     Log.i("흥수", "sad ${error.message}")
                 }
+
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Log.i("흥수", "sa ${outputFileResults.savedUri.toString()}")
                     outputFileResults.savedUri?.let {
@@ -74,15 +61,16 @@ class CameraUtil(
                         recognizeText(InputImage.fromFilePath(context, it))
                             .addOnSuccessListener { task ->
                                 Log.i("흥수", task.text)
-                                onCaptureSuccessListener?.invoke(task.text)
-                            }.addOnFailureListener {e ->
+                                callBacks[CallBackType.ON_SUCCESS]?.invoke(task.text)
+                            }.addOnFailureListener { e ->
                                 Log.i("흥수", e.message.toString())
-                                onCaptureErrorListener?.invoke(e.message.toString())
+                                callBacks[CallBackType.ON_FAIL]?.invoke(e.message.toString())
                             }
                     }
                 }
             })
     }
+
     private fun getScanner(): BarcodeScanner {
         val options = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(
@@ -92,9 +80,10 @@ class CameraUtil(
         return BarcodeScanning.getClient(options)
     }
 
-    private fun getPreview(surfaceProvider: Preview.SurfaceProvider) = Preview.Builder().build().apply {
-        setSurfaceProvider(surfaceProvider)
-    }
+    private fun getPreview(surfaceProvider: Preview.SurfaceProvider) =
+        Preview.Builder().build().apply {
+            setSurfaceProvider(surfaceProvider)
+        }
 
     private fun getCameraSelector() = CameraSelector.Builder()
         .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -120,7 +109,7 @@ class CameraUtil(
                                 Log.i("CardScanner", "$ssid")
                                 Log.i("CardScanner", "$password")
                                 Log.i("CardScanner", "$type")
-                                barcode.wifi?.let { onBarcodeScanSuccessListener?.invoke(it.toString()) }
+                                barcode.wifi?.let { callBacks[CallBackType.ON_SUCCESS]?.invoke(it.toString()) }
                             }
 
                             Barcode.TYPE_URL -> {
@@ -128,7 +117,7 @@ class CameraUtil(
                                 val url = barcode.url!!.url
                                 Log.i("CardScanner", "title $title")
                                 Log.i("CardScanner", "url $url")
-                                url?.let { onBarcodeScanSuccessListener?.invoke(it) }
+                                url?.let { callBacks[CallBackType.ON_SUCCESS]?.invoke(it) }
                             }
                         }
                     }
@@ -136,7 +125,7 @@ class CameraUtil(
                     imageProxy.close()
                     mediaImage.close()
                 }.addOnFailureListener {
-                    onBarcodeScanErrorListener?.invoke("바코드 스캔에 실패하였습니다.")
+                    callBacks[CallBackType.ON_FAIL]?.invoke("바코드 스캔에 실패하였습니다.")
                 }
             }
         }
@@ -145,9 +134,13 @@ class CameraUtil(
     private fun getAnalysis() = ImageAnalysis.Builder()
         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
         .build().apply {
-            setAnalyzer(executor, getImageAnalyzer())
+            setAnalyzer(
+                executor,
+                getImageAnalyzer()
+            )
         }
-    fun onBindScannerPreview(lifecycleOwner: LifecycleOwner): PreviewView {
+
+    internal fun onBindScannerPreview(lifecycleOwner: LifecycleOwner): PreviewView {
         val previewView = PreviewView(context)
         val executor = ContextCompat.getMainExecutor(context)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)

@@ -6,19 +6,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination
-import com.example.cardinfoscanner.ui.navigation.destination.CameraDestination
-import com.example.cardinfoscanner.ui.navigation.destination.PermissionDestination
-import com.example.cardinfoscanner.ui.navigation.destination.ResultDestination
+import com.example.cardinfoscanner.ui.navigation.destination.SettingDestination
 
 @Stable
-fun NavGraphBuilder.resultGraph(
+fun NavGraphBuilder.settingGraph(
     navController: NavHostController,
     startDestination: String,
     route: String
 ) {
     navigation(startDestination = startDestination, route = route) {
-        composable(route = ResultDestination.routeWithArgs, arguments = ResultDestination.arguments) {
-            ResultDestination.screen(navController, it.arguments)
+        composable(route = Destination.settingRout) {
+            SettingDestination.screen(navController, it.arguments)
         }
     }
 }

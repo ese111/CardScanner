@@ -11,10 +11,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.cardinfoscanner.ui.main.CardScannerApp
 import com.example.cardinfoscanner.ui.theme.CardInfoScannerTheme
+import com.example.cardinfoscanner.util.CameraUtil
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
