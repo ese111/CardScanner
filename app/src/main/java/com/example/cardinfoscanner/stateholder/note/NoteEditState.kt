@@ -3,39 +3,29 @@ package com.example.cardinfoscanner.stateholder.note
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.example.cardinfoscanner.stateholder.common.BaseUiState
 import com.example.cardinfoscanner.stateholder.common.rememberUiState
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.serialization.Serializable
 
 @Stable
-class NoteListState(
+class NoteEditState(
     val uiState: BaseUiState,
-    val noteList: List<Note>,
-    val setData: (Note) -> Unit
+    val content: MutableState<String>,
+    val title: MutableState<String>
 )
-
-@Serializable
-data class Note(
-    val id: Long = 0,
-    val title: String,
-    val content: String,
-    val date: String
-): java.io.Serializable
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun rememberNoteListState(
+fun rememberNoteState(
     uiState: BaseUiState = rememberUiState(),
-    noteList: List<Note>,
-    setData: (Note) -> Unit
-) = remember(noteList) {
-    NoteListState(
+    content: MutableState<String> = mutableStateOf(""),
+    title: MutableState<String> = mutableStateOf("")
+) = remember(uiState, content, title) {
+    NoteEditState(
         uiState = uiState,
-        noteList = noteList,
-        setData = setData
+        content = content,
+        title = title
     )
 }

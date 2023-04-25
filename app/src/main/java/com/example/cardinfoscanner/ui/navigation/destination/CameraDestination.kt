@@ -1,7 +1,6 @@
 package com.example.cardinfoscanner.ui.navigation.destination
 
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -39,13 +38,15 @@ object CameraDestination : Destination {
             CameraPreViewScreen(
                 cameraUtil = cameraUtil,
                 navToResult = { state ->
-                    Timber.tag("흥수").i(state)
+                    Timber.tag("AppTest").i(state)
                     if (state.isNotEmpty()) {
                         val str = state.replace("/", "+")
-                        navController.navigateSingleTopTo("${NotesDestination.route}/$str")
+                        navController.navigateSingleTopTo("${NoteEditDestination.route}/$str")
                         return@CameraPreViewScreen
                     }
-                    navController.navigateSingleTopTo("${SettingDestination.route}/result")
+                    cameraState.uiState.scope.launch {
+                        snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
+                    }
                 },
                 navToPermission = { navController.navigateClearTo(permissionRoute) },
                 takePicture = cameraUtil::takePicture,

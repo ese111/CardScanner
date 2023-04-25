@@ -1,8 +1,10 @@
 package com.example.cardinfoscanner.data.base
 
-import com.example.cardinfoscanner.stateholder.note.Note
+import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.Flow
 
 interface NoteDataSource {
-    fun getNoteList(): Flow<List<Note>>
+    fun getNoteList(): Flow<Preferences>
+
+    suspend fun setNoteList(json: String)
 }

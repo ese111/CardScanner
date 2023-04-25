@@ -5,4 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
     fun getNotList(): Flow<List<Note>>
+
+    suspend fun setNoteList(list: List<Note>)
+
 }

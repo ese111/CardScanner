@@ -1,12 +1,15 @@
 package com.example.cardinfoscanner.data.local.storage
 
+import com.example.cardinfoscanner.data.local.datastore.NoteDataStore
 import com.example.cardinfoscanner.stateholder.note.Note
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NoteStorage @Inject constructor() {
+class NoteStorage @Inject constructor(
+    private val noteDataStore: NoteDataStore
+) {
    private val list = listOf(
         Note(
             0,
@@ -69,5 +72,8 @@ class NoteStorage @Inject constructor() {
            "22.04.24"
        )
     )
-    fun getNoteList() = flow{ emit(list)}
+
+    fun getNoteList() = noteDataStore.getNoteList()
+
+    suspend fun setNoteList(json: String) = noteDataStore.setNoteList(json)
 }

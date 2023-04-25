@@ -6,6 +6,8 @@ import javax.inject.Inject
 
 class LocalNoteDataSource @Inject constructor(
     private val noteStorage: NoteStorage
-): NoteDataSource {
+) : NoteDataSource {
     override fun getNoteList() = noteStorage.getNoteList()
+
+    override suspend fun setNoteList(json: String) = noteStorage.setNoteList(json)
 }

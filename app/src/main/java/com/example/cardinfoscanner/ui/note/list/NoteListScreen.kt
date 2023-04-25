@@ -35,6 +35,7 @@ import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.stateholder.note.Note
 import com.example.cardinfoscanner.stateholder.note.NoteListState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteListState
+import com.example.cardinfoscanner.ui.common.MenuIconTopAppBar
 import com.example.cardinfoscanner.ui.common.TopAppBar
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -43,11 +44,11 @@ fun NoteListScreen(
     state: NoteListState,
     onClickMenuButton: () -> Unit
 ) {
+
     Scaffold(
         topBar = {
-            TopAppBar(
+            MenuIconTopAppBar(
                 title = "Note",
-                menuButtonVisible = true,
                 menuIcon = painterResource(R.drawable.ic_camera),
                 onClickMenuButton = onClickMenuButton
             )
@@ -64,7 +65,7 @@ fun NoteListScreen(
                 bottom = 16.dp
             )
         ) {
-            items(items = state.noteList.value, key = { note -> note.id }) { item ->
+            items(items = state.noteList, key = { note -> note.id }) { item ->
                 NoteItem(note = item)
             }
         }
@@ -123,33 +124,9 @@ fun NoteScreenPreview() {
             "description4",
             "A module can be installed in multiple components. For example, maybe you have a binding in ViewComponent and ViewWithFragmentComponent and do not want to duplicate modules. @InstallIn({ViewComponent.class, ViewWithFragmentComponent.class}) will install a module in both components.",
             "22.04.24"
-        ),
-        Note(
-            4,
-            "description5",
-            "A module can be installed in multiple components. For example, maybe you have a binding in ViewComponent and ViewWithFragmentComponent and do not want to duplicate modules. @InstallIn({ViewComponent.class, ViewWithFragmentComponent.class}) will install a module in both components.",
-            "22.04.24"
-        ),
-        Note(
-            5,
-            "description6",
-            "A module can be installed in multiple components. For example, maybe you have a binding in ViewComponent and ViewWithFragmentComponent and do not want to duplicate modules. @InstallIn({ViewComponent.class, ViewWithFragmentComponent.class}) will install a module in both components.",
-            "22.04.24"
-        ),
-        Note(
-            6,
-            "description7",
-            "A module can be installed in multiple components. For example, maybe you have a binding in ViewComponent and ViewWithFragmentComponent and do not want to duplicate modules. @InstallIn({ViewComponent.class, ViewWithFragmentComponent.class}) will install a module in both components.",
-            "22.04.24"
-        ),
-        Note(
-            7,
-            "description8",
-            "A module can be installed in multiple components. For example, maybe you have a binding in ViewComponent and ViewWithFragmentComponent and do not want to duplicate modules. @InstallIn({ViewComponent.class, ViewWithFragmentComponent.class}) will install a module in both components.",
-            "22.04.24"
-        ),
+        )
     )
-    NoteListScreen(state = rememberNoteListState(noteList = MutableStateFlow(list))) {}
+    NoteListScreen(state = rememberNoteListState(noteList = list, setData = {})) {}
 }
 
 @Preview(showBackground = true)

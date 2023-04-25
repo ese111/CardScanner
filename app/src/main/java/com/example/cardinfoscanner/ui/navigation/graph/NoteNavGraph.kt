@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination
+import com.example.cardinfoscanner.ui.navigation.destination.NoteEditDestination
 import com.example.cardinfoscanner.ui.navigation.destination.NotesDestination
 
 @Stable
@@ -17,6 +18,9 @@ fun NavGraphBuilder.noteGraph(
     navigation(startDestination = startDestination, route = route) {
         composable(route = Destination.noteListRout) {
             NotesDestination.screen(navController, it.arguments)
+        }
+        composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
+            NoteEditDestination.screen(navController, it.arguments)
         }
     }
 }

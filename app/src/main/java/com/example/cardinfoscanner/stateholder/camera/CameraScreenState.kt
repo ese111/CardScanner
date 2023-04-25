@@ -8,17 +8,20 @@ import com.example.cardinfoscanner.stateholder.common.rememberUiState
 @Stable
 class CameraScreenState(
     val uiState: BaseUiState,
-    var value: MutableState<String>
+    var value: MutableState<String>,
+    val title: MutableState<String>
 )
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun rememberCameraScreenState(
     uiState: BaseUiState = rememberUiState(),
-    value: MutableState<String> = remember{ mutableStateOf("") }
-): CameraScreenState = remember(uiState, value) {
+    value: MutableState<String> = remember{ mutableStateOf("") },
+    title: MutableState<String> = remember { mutableStateOf("") }
+): CameraScreenState = remember(uiState, value, title) {
     CameraScreenState(
         uiState = uiState,
-        value = value
+        value = value,
+        title = title
     )
 }
