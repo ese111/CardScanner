@@ -40,13 +40,9 @@ fun NoteEditScreen(
             MenuTextTopAppBar(
                 title = "Note",
                 backButtonVisible = true,
-                onClickBackButton = {
-                    dialogState = true
-                },
+                onClickBackButton = { dialogState = true },
                 menuText = "저장",
-                onClickMenuButton = {
-
-                }
+                onClickMenuButton = { saveDialog = true }
             )
         }
     ) { paddingValues ->

@@ -19,6 +19,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
@@ -51,19 +52,18 @@ class CameraUtil(
         imageCapture.takePicture(outputFileOptions, executor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(error: ImageCaptureException) {
-                    Log.i("흥수", "sad ${error.message}")
+                    Timber.tag("AppTest").i("sad ${error.message}", )
                 }
-
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Log.i("흥수", "sa ${outputFileResults.savedUri.toString()}")
+                    Timber.tag("AppTest").i("sa %s", outputFileResults.savedUri.toString())
                     outputFileResults.savedUri?.let {
-                        Log.i("흥수", it.toString())
+                        Timber.tag("AppTest").i(it.toString())
                         recognizeText(InputImage.fromFilePath(context, it))
                             .addOnSuccessListener { task ->
-                                Log.i("흥수", task.text)
+                                Timber.tag("AppTest").i(task.text)
                                 callBacks[CallBackType.ON_SUCCESS]?.invoke(task.text)
                             }.addOnFailureListener { e ->
-                                Log.i("흥수", e.message.toString())
+                                Timber.tag("AppTest").i(e.message.toString())
                                 callBacks[CallBackType.ON_FAIL]?.invoke(e.message.toString())
                             }
                     }
@@ -106,17 +106,17 @@ class CameraUtil(
                                 val ssid = barcode.wifi!!.ssid
                                 val password = barcode.wifi!!.password
                                 val type = barcode.wifi!!.encryptionType
-                                Log.i("CardScanner", "$ssid")
-                                Log.i("CardScanner", "$password")
-                                Log.i("CardScanner", "$type")
+                                Timber.tag("CardScanner").i(ssid)
+                                Timber.tag("CardScanner").i(password)
+                                Timber.tag("CardScanner").i(type.toString())
                                 barcode.wifi?.let { callBacks[CallBackType.ON_SUCCESS]?.invoke(it.toString()) }
                             }
 
                             Barcode.TYPE_URL -> {
                                 val title = barcode.url!!.title
                                 val url = barcode.url!!.url
-                                Log.i("CardScanner", "title $title")
-                                Log.i("CardScanner", "url $url")
+                                Timber.tag("CardScanner").i("title %s", title)
+                                Timber.tag("CardScanner").i("url %s", url)
                                 url?.let { callBacks[CallBackType.ON_SUCCESS]?.invoke(it) }
                             }
                         }

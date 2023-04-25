@@ -26,15 +26,18 @@ object CameraDestination : Destination {
             val snackBarHostState = remember { SnackbarHostState() }
             val dialogState = remember { mutableStateOf(false) }
             val cameraState = rememberCameraScreenState()
-            val cameraUtil = CameraUtil(cameraState.uiState.context)
-                .addSuccessCallBack {
-                    cameraState.value.value = it
-                    dialogState.value = true
-                }.addErrorCallBack {
-                    cameraState.uiState.scope.launch {
-                        snackBarHostState.showSnackbar(it)
+            val cameraUtil = remember {
+                CameraUtil(cameraState.uiState.context)
+                    .addSuccessCallBack {
+                        cameraState.value.value = it
+                        dialogState.value = true
+                    }.addErrorCallBack {
+                        cameraState.uiState.scope.launch {
+                            snackBarHostState.showSnackbar(it)
+                        }
                     }
-                }
+            }
+            Timber.tag("AppTest").i(cameraUtil.hashCode().toString())
             CameraPreViewScreen(
                 cameraUtil = cameraUtil,
                 navToResult = { state ->

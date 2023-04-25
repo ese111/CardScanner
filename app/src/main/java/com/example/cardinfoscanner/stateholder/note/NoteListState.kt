@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import com.example.cardinfoscanner.stateholder.common.BaseUiState
@@ -15,6 +16,7 @@ import kotlinx.serialization.Serializable
 class NoteListState(
     val uiState: BaseUiState,
     val noteList: List<Note>,
+    val newNote: Note,
     val setData: (Note) -> Unit
 )
 
@@ -30,12 +32,14 @@ data class Note(
 @Composable
 fun rememberNoteListState(
     uiState: BaseUiState = rememberUiState(),
-    noteList: List<Note>,
+    noteList: List<Note> = emptyList(),
+    newNote: Note = Note(0, "", "", ""),
     setData: (Note) -> Unit
 ) = remember(noteList) {
     NoteListState(
         uiState = uiState,
         noteList = noteList,
+        newNote = newNote,
         setData = setData
     )
 }
