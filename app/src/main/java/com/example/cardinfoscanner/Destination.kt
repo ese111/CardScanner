@@ -4,11 +4,12 @@ import android.os.Bundle
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 
 interface Destination {
     val route: String
-    val screen: @Composable (navController: NavHostController, arguments: Bundle) -> Unit
+    val screen: @Composable (navController: NavHostController, arguments: Bundle, mainViewModel: MainViewModel?) -> Unit
 
     companion object {
         internal const val cameraHomeRoute = "home/cam"

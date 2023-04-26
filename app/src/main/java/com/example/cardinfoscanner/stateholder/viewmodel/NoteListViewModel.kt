@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.stateIn
@@ -33,7 +34,8 @@ class NoteListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(onLoadCeh) {
-            noteRepository.getNotList().collectLatest {
+            noteRepository.getNotList().collect {
+                Timber.tag("AppTest").d("list : ${it}")
                 _noteList.value = it
             }
         }
@@ -42,8 +44,10 @@ class NoteListViewModel @Inject constructor(
     fun setNotesList(note: Note) = viewModelScope.launch {
         val list = mutableListOf<Note>()
         list.addAll(noteList.value)
-        list.add(note)
+        val newNote = note.copy(id = list.size - 1L)
+        list.add(newNote)
 //        _noteList.value = list
+        Timber.tag("AppTest").d("setNotesList : $list")
         noteRepository.setNoteList(list)
     }
 

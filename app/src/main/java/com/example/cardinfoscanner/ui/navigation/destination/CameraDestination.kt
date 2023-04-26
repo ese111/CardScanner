@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
+import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.navigateClearTo
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
@@ -21,7 +22,7 @@ import timber.log.Timber
 
 object CameraDestination : Destination {
     override val route = cameraRoute
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _ ->
         navController.currentBackStackEntry?.let {
             val snackBarHostState = remember { SnackbarHostState() }
             val dialogState = remember { mutableStateOf(false) }
@@ -64,7 +65,7 @@ object CameraDestination : Destination {
 
 object PermissionDestination : Destination {
     override val route = permissionRoute
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _->
         navController.currentBackStackEntry?.let {
             FeatureThatRequiresCameraPermission(moveToNext = {
                 navController.navigateClearTo(

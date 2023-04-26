@@ -16,7 +16,6 @@ import kotlinx.serialization.Serializable
 class NoteListState(
     val uiState: BaseUiState,
     val noteList: List<Note>,
-    val newNote: Note,
     val setData: (Note) -> Unit
 )
 
@@ -33,13 +32,11 @@ data class Note(
 fun rememberNoteListState(
     uiState: BaseUiState = rememberUiState(),
     noteList: List<Note> = emptyList(),
-    newNote: Note = Note(0, "", "", ""),
     setData: (Note) -> Unit
 ) = remember(noteList) {
     NoteListState(
         uiState = uiState,
         noteList = noteList,
-        newNote = newNote,
         setData = setData
     )
 }

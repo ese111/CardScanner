@@ -37,6 +37,7 @@ import com.example.cardinfoscanner.Destination.Companion.noteHomeRout
 import com.example.cardinfoscanner.Destination.Companion.noteListRout
 import com.example.cardinfoscanner.Destination.Companion.settingHomeRout
 import com.example.cardinfoscanner.Destination.Companion.settingRout
+import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.navigateSingleTopToGraph
@@ -52,6 +53,7 @@ enum class BottomNavItem(val route: String, @DrawableRes val icon: Int, @StringR
 
 @Composable
 fun CardScannerApp(
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     var bottomBarVisible by remember { mutableStateOf(false) }
@@ -78,17 +80,20 @@ fun CardScannerApp(
             noteGraph(
                 navController = navController,
                 startDestination = noteListRout,
-                route = noteHomeRout
+                route = noteHomeRout,
+                mainViewModel = mainViewModel
             )
             cameraGraph(
                 navController = navController,
                 startDestination = cameraRoute,
-                route = cameraHomeRoute
+                route = cameraHomeRoute,
+                mainViewModel = mainViewModel
             )
             settingGraph(
                 navController = navController,
                 startDestination = settingRout,
-                route = settingHomeRout
+                route = settingHomeRout,
+                mainViewModel = mainViewModel
             )
         }
     }

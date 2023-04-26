@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
+import com.example.cardinfoscanner.MainViewModel
 
 object SettingDestination: Destination {
     override val route = Destination.settingRout
@@ -14,7 +15,7 @@ object SettingDestination: Destination {
     val arguments = listOf(
         navArgument(errorKey) { type = NavType.StringType }
     )
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, bundle ->
+    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, bundle, _ ->
         navController.currentBackStackEntry?.let {
             bundle?.getString(errorKey)?.let {
             }

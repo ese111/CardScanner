@@ -67,12 +67,8 @@ fun CameraPreViewScreen(
                 phrase = cameraState.value.value,
                 confirmText = "확인",
                 dismissText = "취소",
-                onConfirm = {
-                    navToResult(cameraState.value.value)
-                },
-                onDismiss = {
-                    dialogState.value = false
-                }
+                onConfirm = { navToResult(cameraState.value.value) },
+                onDismiss = { dialogState.value = false }
             )
         }
         Column(
@@ -124,9 +120,7 @@ private fun CameraButton(
             .height(60.dp)
             .width(60.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-    ) {
-
-    }
+    ) {}
 }
 
 

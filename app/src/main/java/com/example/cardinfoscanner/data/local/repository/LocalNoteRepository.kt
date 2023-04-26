@@ -8,15 +8,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import javax.inject.Inject
 
 class LocalNoteRepository @Inject constructor(
     private val noteDataSource: NoteDataSource
 ): NoteRepository {
     override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList().map { pref ->
-        pref.asMap().values.toList().map { item ->
-            Json.decodeFromString(item.toString())
+        Timber.tag("AppTest").d("asMap : ${pref.asMap().values}")
+        val flow = pref.asMap().values.toList().map { item ->
+            Timber.tag("AppTest").d("getNotList : ${item}")
+            val list = Json.decodeFromString<List<Note>>(item.toString())
+            list
         }
+        flow.first()
     }
 
     override suspend fun setNoteList(list: List<Note>) {
