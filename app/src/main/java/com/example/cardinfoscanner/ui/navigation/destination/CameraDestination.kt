@@ -52,7 +52,7 @@ object CameraDestination : Destination {
                         snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
                     }
                 },
-                navToPermission = { navController.navigateClearTo(permissionRoute) },
+                navToPermission = { navController.navigateSingleTopTo(permissionRoute) },
                 takePicture = cameraUtil::takePicture,
                 dialogState = dialogState,
                 cameraState = cameraState,

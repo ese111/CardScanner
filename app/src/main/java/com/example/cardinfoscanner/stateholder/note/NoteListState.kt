@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Stable
 class NoteListState(
     val uiState: BaseUiState,
-    val noteList: List<Note>,
+    val noteList: State<List<Note>>,
     val setData: (Note) -> Unit
 )
 
@@ -31,7 +31,7 @@ data class Note(
 @Composable
 fun rememberNoteListState(
     uiState: BaseUiState = rememberUiState(),
-    noteList: List<Note> = emptyList(),
+    noteList: State<List<Note>> = remember { mutableStateOf(emptyList()) },
     setData: (Note) -> Unit
 ) = remember(noteList) {
     NoteListState(

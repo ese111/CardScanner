@@ -64,12 +64,12 @@ fun FeatureThatRequiresCameraPermission(
                         moveToNext()
                     } else {
                         if (cameraPermissionState.status.shouldShowRationale) {
-                            cameraPermissionState.launchPermissionRequest()
-                        } else {
                             Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                                 data = Uri.parse("package:" + context.packageName)
                                 context.startActivity(this)
                             }
+                        } else {
+                            cameraPermissionState.launchPermissionRequest()
                         }
                     }
                 }
@@ -83,7 +83,5 @@ fun FeatureThatRequiresCameraPermission(
 @Preview(showBackground = true)
 @Composable
 fun PermissionScreenPreview() {
-    Scaffold {
-        FeatureThatRequiresCameraPermission {}
-    }
+    FeatureThatRequiresCameraPermission {}
 }

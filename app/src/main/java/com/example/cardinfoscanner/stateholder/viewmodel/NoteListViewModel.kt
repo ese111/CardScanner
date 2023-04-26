@@ -44,7 +44,7 @@ class NoteListViewModel @Inject constructor(
     fun setNotesList(note: Note) = viewModelScope.launch {
         val list = mutableListOf<Note>()
         list.addAll(noteList.value)
-        val newNote = note.copy(id = list.size - 1L)
+        val newNote = note.copy(id = list.size.toLong())
         list.add(newNote)
 //        _noteList.value = list
         Timber.tag("AppTest").d("setNotesList : $list")

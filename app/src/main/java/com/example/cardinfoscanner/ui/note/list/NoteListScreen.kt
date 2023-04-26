@@ -14,6 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -53,7 +55,7 @@ fun NoteListScreen(
                 bottom = 16.dp
             )
         ) {
-            items(items = state.noteList, key = { note -> note.id }) { item ->
+            items(items = state.noteList.value, key = { note -> note.id }) { item ->
                 NoteItem(note = item)
             }
         }
@@ -114,7 +116,7 @@ fun NoteScreenPreview() {
             "22.04.24"
         )
     )
-    NoteListScreen(state = rememberNoteListState(noteList = list, setData = {})) {}
+    NoteListScreen(state = rememberNoteListState(noteList = remember { mutableStateOf(list) }, setData = {})) {}
 }
 
 @Preview(showBackground = true)

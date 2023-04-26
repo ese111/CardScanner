@@ -14,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
+import com.example.cardinfoscanner.navigateClearTo
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.note.Note
@@ -35,7 +36,7 @@ object NotesDestination: Destination {
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, mainViewModel ->
         navController.currentBackStackEntry?.let {
             val viewModel: NoteListViewModel = hiltViewModel(it)
-            val noteListState by viewModel.noteList.collectAsStateWithLifecycle()
+            val noteListState = viewModel.noteList.collectAsStateWithLifecycle()
             val event = mainViewModel?.subscribe<Note>()?.collectAsStateWithLifecycle(initialValue = Note(0,"","",""))
             Timber.tag("AppTest").d("NotesDestination mainViewModel : ${mainViewModel.hashCode()}")
             Timber.tag("AppTest").d("noteListState : $noteListState")
@@ -73,7 +74,7 @@ object NoteEditDestination: Destination {
                         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
                         Timber.tag("AppTest").d("now : $now $title $content")
                         mainViewModel?.putEvent(Note(title = title, content = content, date = now.toString()))
-                        navController.navigate(NotesDestination.route)
+                        navController.navigateClearTo(NotesDestination.route)
                     },
                     onClickCancel = { navController.navigateUp() }
                 )
