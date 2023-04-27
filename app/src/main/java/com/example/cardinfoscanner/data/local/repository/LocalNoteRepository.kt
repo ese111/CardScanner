@@ -15,9 +15,7 @@ class LocalNoteRepository @Inject constructor(
     private val noteDataSource: NoteDataSource
 ): NoteRepository {
     override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList().map { pref ->
-        Timber.tag("AppTest").d("asMap : ${pref.asMap().values}")
         val flow = pref.asMap().values.toList().map { item ->
-            Timber.tag("AppTest").d("getNotList : ${item}")
             val list = Json.decodeFromString<List<Note>>(item.toString())
             list
         }

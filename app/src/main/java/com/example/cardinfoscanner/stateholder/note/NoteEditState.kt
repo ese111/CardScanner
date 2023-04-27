@@ -13,7 +13,8 @@ import com.example.cardinfoscanner.stateholder.common.rememberUiState
 class NoteEditState(
     val uiState: BaseUiState,
     val content: MutableState<String>,
-    val title: MutableState<String>
+    val title: MutableState<String>,
+    val setNote: (Note) -> Unit
 )
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -21,11 +22,13 @@ class NoteEditState(
 fun rememberNoteState(
     uiState: BaseUiState = rememberUiState(),
     content: MutableState<String> = mutableStateOf(""),
-    title: MutableState<String> = mutableStateOf("")
+    title: MutableState<String> = mutableStateOf(""),
+    setNote: (Note) -> Unit = {}
 ) = remember(uiState, content, title) {
     NoteEditState(
         uiState = uiState,
         content = content,
-        title = title
+        title = title,
+        setNote = setNote
     )
 }

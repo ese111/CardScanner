@@ -21,7 +21,7 @@ class NoteListState(
 
 @Serializable
 data class Note(
-    val id: Long = 0,
+    val id: Long = -1,
     val title: String,
     val content: String,
     val date: String

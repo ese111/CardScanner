@@ -75,7 +75,6 @@ fun CardScannerApp(
             navController = navController,
             startDestination = noteHomeRout,
             modifier = Modifier.padding(paddingValues)
-
         ) {
             noteGraph(
                 navController = navController,

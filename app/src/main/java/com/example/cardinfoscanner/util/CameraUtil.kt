@@ -55,15 +55,11 @@ class CameraUtil(
                     Timber.tag("AppTest").i("sad ${error.message}", )
                 }
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Timber.tag("AppTest").i("sa %s", outputFileResults.savedUri.toString())
                     outputFileResults.savedUri?.let {
-                        Timber.tag("AppTest").i(it.toString())
                         recognizeText(InputImage.fromFilePath(context, it))
                             .addOnSuccessListener { task ->
-                                Timber.tag("AppTest").i(task.text)
                                 callBacks[CallBackType.ON_SUCCESS]?.invoke(task.text)
                             }.addOnFailureListener { e ->
-                                Timber.tag("AppTest").i(e.message.toString())
                                 callBacks[CallBackType.ON_FAIL]?.invoke(e.message.toString())
                             }
                     }

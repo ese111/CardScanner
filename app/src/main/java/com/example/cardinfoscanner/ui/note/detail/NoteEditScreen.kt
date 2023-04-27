@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,20 +22,56 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.cardinfoscanner.stateholder.note.Note
 import com.example.cardinfoscanner.stateholder.note.NoteEditState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteState
 import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun NoteEditScreen(
     state: NoteEditState = rememberNoteState(),
-    onClickSave: (String, String) -> Unit = { _, _ -> },
+    onClickSave: () -> Unit = {},
     onClickCancel: () -> Unit = {}
 ) {
     var dialogState by remember { mutableStateOf(false) }
     var saveDialog by remember { mutableStateOf(false) }
 
+    if(dialogState) {
+        NormalDialog(
+            title = "저장하지 않습니다.",
+            phrase = "정말로 취소하시겠습니까?",
+            confirmText = "확인",
+            dismissText = "취소",
+            onConfirm = {
+                dialogState = false
+                onClickCancel()
+            },
+            onDismiss = { dialogState = false }
+        )
+    }
+    if (saveDialog) {
+        NormalDialog(
+            title = "저장하기",
+            phrase = "정말로 저장하시겠습니까?",
+            confirmText = "확인",
+            dismissText = "취소",
+            onConfirm = {
+                saveDialog = false
+                state.setNote(
+                    Note(
+                        title = state.title.value,
+                        content = state.content.value,
+                        date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toString())
+                )
+                onClickSave()
+            },
+            onDismiss = { saveDialog = false }
+        )
+    }
     Scaffold(
         topBar = {
             MenuTextTopAppBar(
@@ -46,33 +83,7 @@ fun NoteEditScreen(
             )
         }
     ) { paddingValues ->
-        if (dialogState) {
-            NormalDialog(
-                title = "저장하지 않습니다.",
-                phrase = "정말로 취소하시겠습니까?",
-                confirmText = "확인",
-                dismissText = "취소",
-                onConfirm = {
-                    dialogState = false
-                    onClickCancel()
-                },
-                onDismiss = { dialogState = false }
-            )
-        }
 
-        if (saveDialog) {
-            NormalDialog(
-                title = "저장하기",
-                phrase = "정말로 저장하시겠습니까?",
-                confirmText = "확인",
-                dismissText = "취소",
-                onConfirm = {
-                    saveDialog = false
-                    onClickSave(state.title.value, state.content.value)
-                },
-                onDismiss = { saveDialog = false }
-            )
-        }
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -153,5 +164,5 @@ fun ContentEditorPreview() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultNoteDetailPreview() {
-    NoteEditScreen(onClickCancel = {}, onClickSave = { _, _ -> })
+    NoteEditScreen(onClickCancel = {}, onClickSave = {})
 }

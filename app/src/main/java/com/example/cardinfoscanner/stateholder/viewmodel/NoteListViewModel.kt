@@ -35,7 +35,6 @@ class NoteListViewModel @Inject constructor(
     init {
         viewModelScope.launch(onLoadCeh) {
             noteRepository.getNotList().collect {
-                Timber.tag("AppTest").d("list : ${it}")
                 _noteList.value = it
             }
         }
@@ -46,7 +45,6 @@ class NoteListViewModel @Inject constructor(
         list.addAll(noteList.value)
         val newNote = note.copy(id = list.size.toLong())
         list.add(newNote)
-//        _noteList.value = list
         Timber.tag("AppTest").d("setNotesList : $list")
         noteRepository.setNoteList(list)
     }

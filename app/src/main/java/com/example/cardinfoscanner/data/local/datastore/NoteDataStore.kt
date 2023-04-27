@@ -25,7 +25,6 @@ class NoteDataStore @Inject constructor(
 
     suspend fun setNoteList(json: String) {
         context.notesDataStore.edit { pref ->
-            Timber.tag("AppTest").d("pref : $json")
             pref[NOTES] = json
         }
     }

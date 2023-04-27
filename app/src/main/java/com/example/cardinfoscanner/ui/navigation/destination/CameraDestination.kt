@@ -10,7 +10,6 @@ import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.MainViewModel
-import com.example.cardinfoscanner.navigateClearTo
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
@@ -38,11 +37,10 @@ object CameraDestination : Destination {
                         }
                     }
             }
-            Timber.tag("AppTest").i(cameraUtil.hashCode().toString())
-            CameraPreViewScreen(
+
+            val view = CameraPreViewScreen(
                 cameraUtil = cameraUtil,
                 navToResult = { state ->
-                    Timber.tag("AppTest").i(state)
                     if (state.isNotEmpty()) {
                         val str = state.replace("/", "+")
                         navController.navigateSingleTopTo("${NoteEditDestination.route}/$str")
@@ -59,6 +57,7 @@ object CameraDestination : Destination {
                 snackbarHostState = snackBarHostState,
                 onUpButtonClick = navController::navigateUp
             )
+            Timber.tag("AppTest").i("CameraPreViewScreen : ${view.hashCode()}")
         }
     }
 }
@@ -68,8 +67,8 @@ object PermissionDestination : Destination {
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _->
         navController.currentBackStackEntry?.let {
             FeatureThatRequiresCameraPermission(moveToNext = {
-                navController.navigateClearTo(
-                    cameraRoute
+                navController.navigateSingleTopTo(
+                    cameraRoute, true
                 )
             })
         }

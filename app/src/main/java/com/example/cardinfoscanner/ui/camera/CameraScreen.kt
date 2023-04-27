@@ -29,6 +29,7 @@ import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
