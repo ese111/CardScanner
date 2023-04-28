@@ -4,11 +4,8 @@ import android.Manifest
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -24,12 +21,11 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.cardinfoscanner.stateholder.camera.CameraScreenState
 import com.example.cardinfoscanner.ui.common.CardSnackBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
-import com.example.cardinfoscanner.ui.common.TopAppBar
+import com.example.cardinfoscanner.ui.common.BasicTopAppBar
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -59,7 +55,7 @@ fun CameraPreViewScreen(
             }
         },
         topBar = {
-            TopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
+            BasicTopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
         }
     ) { paddingValues ->
         if (dialogState.value) {

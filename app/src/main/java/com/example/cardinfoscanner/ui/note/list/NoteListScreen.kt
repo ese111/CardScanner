@@ -74,7 +74,7 @@ fun NoteItem(
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            Text(text = note.title, fontSize = 18.sp)
+            Text(text = note.title, fontSize = 18.sp,  overflow = TextOverflow.Ellipsis, maxLines = 1)
             Spacer(
                 modifier = Modifier.height(12.dp)
             )
