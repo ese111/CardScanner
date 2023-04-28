@@ -116,7 +116,7 @@ fun NoteScreenPreview() {
             "22.04.24"
         )
     )
-    NoteListScreen(state = rememberNoteListState(noteList = remember { mutableStateOf(list) }, setData = {})) {}
+    NoteListScreen(state = rememberNoteListState(noteList = remember { mutableStateOf(list) })) {}
 }
 
 @Preview(showBackground = true)

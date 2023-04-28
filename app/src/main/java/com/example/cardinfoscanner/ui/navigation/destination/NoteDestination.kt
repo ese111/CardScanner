@@ -10,36 +10,25 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
-import com.example.cardinfoscanner.navigateSingleTopTo
-import com.example.cardinfoscanner.stateholder.note.Note
+import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.note.rememberNoteListState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteState
+import com.example.cardinfoscanner.stateholder.viewmodel.NoteEditViewModel
 import com.example.cardinfoscanner.stateholder.viewmodel.NoteListViewModel
 import com.example.cardinfoscanner.ui.note.detail.NoteEditScreen
 import com.example.cardinfoscanner.ui.note.list.NoteListScreen
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import timber.log.Timber
 
 object NotesDestination: Destination {
     override val route = Destination.noteListRout
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, mainViewModel ->
         navController.currentBackStackEntry?.let {
             val viewModel: NoteListViewModel = hiltViewModel(it)
-            val noteListState = viewModel.noteList.collectAsStateWithLifecycle()
-            val event = mainViewModel?.subscribe<Note>()?.collectAsStateWithLifecycle(initialValue = Note(-1,"","",""))
-            Timber.tag("AppTest").d("event : ${event?.value}")
-            if(event?.value?.date?.isNotEmpty() == true) {
-                viewModel.setNotesList(event.value)
-            }
+            val noteListState = viewModel.noteList.collectAsStateWithLifecycle(initialValue = emptyList())
             NoteListScreen(
                 state = rememberNoteListState(
-                    noteList = noteListState,
-                    setData = { note -> viewModel.setNotesList(note) }
+                    noteList = noteListState
                 ),
-                onClickMenuButton = { navController.navigateSingleTopTo(Destination.cameraRoute) }
+                onClickMenuButton = { navController.navigateSingleTopToGraph(Destination.cameraRoute) }
             )
         }
     }
@@ -54,7 +43,7 @@ object NoteEditDestination: Destination {
     )
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, bundle, mainViewModel->
         navController.currentBackStackEntry?.let {
-            val viewModel: NoteListViewModel = hiltViewModel(it)
+            val viewModel: NoteEditViewModel = hiltViewModel(it)
             bundle?.getString(resultKey)?.let { scanText ->
                 NoteEditScreen(
                     state = rememberNoteState(
@@ -62,7 +51,7 @@ object NoteEditDestination: Destination {
                         setNote = { note -> viewModel.setNotesList(note) }
                     ),
                     onClickSave = {
-                        navController.navigateSingleTopTo(NotesDestination.route, true)
+                        navController.navigateSingleTopToGraph(NotesDestination.route)
                     },
                     onClickCancel = { navController.navigateUp() }
                 )

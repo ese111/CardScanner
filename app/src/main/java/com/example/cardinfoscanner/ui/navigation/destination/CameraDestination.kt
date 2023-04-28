@@ -10,7 +10,7 @@ import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.MainViewModel
-import com.example.cardinfoscanner.navigateSingleTopTo
+import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
 import com.example.cardinfoscanner.ui.permission.FeatureThatRequiresCameraPermission
@@ -43,14 +43,14 @@ object CameraDestination : Destination {
                 navToResult = { state ->
                     if (state.isNotEmpty()) {
                         val str = state.replace("/", "+")
-                        navController.navigateSingleTopTo("${NoteEditDestination.route}/$str")
+                        navController.navigateSingleTopToGraph("${NoteEditDestination.route}/$str")
                         return@CameraPreViewScreen
                     }
                     cameraState.uiState.scope.launch {
                         snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
                     }
                 },
-                navToPermission = { navController.navigateSingleTopTo(permissionRoute) },
+                navToPermission = { navController.navigateSingleTopToGraph(permissionRoute) },
                 takePicture = cameraUtil::takePicture,
                 dialogState = dialogState,
                 cameraState = cameraState,
@@ -67,8 +67,8 @@ object PermissionDestination : Destination {
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _->
         navController.currentBackStackEntry?.let {
             FeatureThatRequiresCameraPermission(moveToNext = {
-                navController.navigateSingleTopTo(
-                    cameraRoute, true
+                navController.navigateSingleTopToGraph(
+                    cameraRoute
                 )
             })
         }

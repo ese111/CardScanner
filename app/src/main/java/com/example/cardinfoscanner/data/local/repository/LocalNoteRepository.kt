@@ -14,16 +14,10 @@ import javax.inject.Inject
 class LocalNoteRepository @Inject constructor(
     private val noteDataSource: NoteDataSource
 ): NoteRepository {
-    override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList().map { pref ->
-        val flow = pref.asMap().values.toList().map { item ->
-            val list = Json.decodeFromString<List<Note>>(item.toString())
-            list
-        }
-        flow.first()
-    }
+    override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList()
 
-    override suspend fun setNoteList(list: List<Note>) {
-        noteDataSource.setNoteList(Json.encodeToString(list))
+    override suspend fun setNoteList(note: Note) {
+        noteDataSource.setNoteList(note)
     }
 
 }

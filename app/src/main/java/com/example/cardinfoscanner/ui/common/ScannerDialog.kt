@@ -25,8 +25,8 @@ fun NormalDialog(
         onDismissRequest = {
 
         },
-        title = { Text(text = title, fontSize = 12.sp) },
-        text = { Text(text = phrase, fontSize = 11.sp, maxLines = 5, overflow = TextOverflow.Ellipsis) },
+        title = { Text(text = title, fontSize = 20.sp) },
+        text = { Text(text = phrase, fontSize = 16.sp, maxLines = 5, overflow = TextOverflow.Ellipsis) },
         modifier = modifier,
         dismissButton = {
             TextButton(

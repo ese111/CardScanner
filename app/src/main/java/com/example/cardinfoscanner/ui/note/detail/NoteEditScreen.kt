@@ -29,6 +29,7 @@ import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
@@ -65,7 +66,8 @@ fun NoteEditScreen(
                     Note(
                         title = state.title.value,
                         content = state.content.value,
-                        date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toString())
+                        date = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date}"
+                    )
                 )
                 onClickSave()
             },
