@@ -26,7 +26,9 @@ object NotesDestination: Destination {
             val noteListState = viewModel.noteList.collectAsStateWithLifecycle(initialValue = emptyList())
             NoteListScreen(
                 state = rememberNoteListState(
-                    noteList = noteListState
+                    noteList = noteListState,
+                    onRemoveNote = viewModel::removeNote,
+                    onCancelRemove = viewModel::cancelRemove
                 ),
                 onClickMenuButton = { navController.navigateSingleTopToGraph(Destination.cameraRoute) }
             )

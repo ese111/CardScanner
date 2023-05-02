@@ -1,24 +1,16 @@
 package com.example.cardinfoscanner.ui.common
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -32,32 +24,27 @@ import com.example.cardinfoscanner.R
 fun BasicTopAppBar(
     title: String,
     backButtonVisible: Boolean = false,
-    onClickBackButton: (() -> Unit)? = null,
+    onClickBackButton: () -> Unit = {},
 ) {
     TopAppBar(
         title = {
             Text(
-                text = title,
-                modifier = if (backButtonVisible) {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                } else {
-                    Modifier.fillMaxWidth()
-                },
+                text = title
             )
         },
-        modifier = Modifier.padding(16.dp),
         navigationIcon = {
             if (backButtonVisible) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .clickable {
-                            onClickBackButton?.invoke()
-                        }
-                )
+                Row {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable {
+                                onClickBackButton()
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
             }
         }
     )
@@ -68,45 +55,43 @@ fun BasicTopAppBar(
 fun MenuIconTopAppBar(
     title: String,
     backButtonVisible: Boolean = false,
-    menuIcon: Painter = painterResource(id = R.drawable.icon_menu),
+    menuIcon: Painter = painterResource(id = R.drawable.ic_menu),
     onClickBackButton: () -> Unit = {},
     onClickMenuButton: () -> Unit = {}
 ) {
     TopAppBar(
         title = {
             Text(
-                text = title,
-                modifier = if (backButtonVisible) {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                } else {
-                    Modifier.fillMaxWidth()
-                }
+                text = title
             )
         },
-        modifier = Modifier.padding(16.dp),
         navigationIcon = {
             if (backButtonVisible) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .clickable {
-                            onClickBackButton()
-                        }
-                )
+                Row {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable {
+                                onClickBackButton()
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
             }
         },
         actions = {
-            Icon(
-                painter = menuIcon,
-                contentDescription = "Menu",
-                modifier = Modifier
-                    .clickable {
-                        onClickMenuButton()
-                    }
-            )
+            Row {
+                Icon(
+                    painter = menuIcon,
+                    contentDescription = "Menu",
+                    modifier = Modifier
+                        .clickable {
+                            onClickMenuButton()
+                        }
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
         }
     )
 }
@@ -123,35 +108,33 @@ fun MenuTextTopAppBar(
     TopAppBar(
         title = {
             Text(
-                text = title,
-                modifier = if (backButtonVisible) {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                } else {
-                    Modifier.fillMaxWidth()
-                }
+                text = title
             )
         },
-        modifier = Modifier.padding(16.dp),
         navigationIcon = {
             if (backButtonVisible) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .clickable {
-                            onClickBackButton()
-                        }
-                )
+                Row {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .clickable {
+                                onClickBackButton()
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
             }
         },
         actions = {
-            Text(
-                modifier = Modifier.clickable { onClickMenuButton() },
-                text = menuText,
-                textAlign = TextAlign.Center
-            )
+            Row {
+                Text(
+                    modifier = Modifier.clickable { onClickMenuButton() },
+                    text = menuText,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
         }
     )
 }

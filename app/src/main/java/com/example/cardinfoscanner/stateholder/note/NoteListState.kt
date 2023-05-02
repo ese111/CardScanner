@@ -13,8 +13,10 @@ import kotlinx.serialization.Serializable
 @Stable
 class NoteListState(
     val uiState: BaseUiState,
-    val noteList: State<List<Note>>
-    )
+    val noteList: State<List<Note>>,
+    val onRemoveNote: (Note) -> Unit,
+    val onCancelRemove: () -> Unit
+)
 
 @Serializable
 data class Note(
@@ -29,9 +31,13 @@ data class Note(
 fun rememberNoteListState(
     uiState: BaseUiState = rememberUiState(),
     noteList: State<List<Note>> = remember { mutableStateOf(emptyList()) },
+    onRemoveNote: (Note) -> Unit = {},
+    onCancelRemove: () -> Unit = {}
 ) = remember(noteList) {
     NoteListState(
         uiState = uiState,
-        noteList = noteList
+        noteList = noteList,
+        onRemoveNote = onRemoveNote,
+        onCancelRemove = onCancelRemove
     )
 }

@@ -15,9 +15,7 @@ class LocalNoteRepository @Inject constructor(
     private val noteDataSource: NoteDataSource
 ): NoteRepository {
     override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList()
-
-    override suspend fun setNoteList(note: Note) {
-        noteDataSource.setNoteList(note)
-    }
-
+    override suspend fun setNoteList(note: Note) = noteDataSource.setNoteList(note)
+    override suspend fun removeNote(note: Note) = noteDataSource.removeNote(note)
+    override suspend fun cancelRemove() = noteDataSource.cancelRemove()
 }

@@ -11,4 +11,8 @@ class LocalNoteDataSource @Inject constructor(
     override fun getNoteList() = noteStorage.noteList
 
     override suspend fun setNoteList(note: Note) = noteStorage.setNoteList(note)
+    override suspend fun removeNote(note: Note) = noteStorage.removeNote(note)
+
+    override suspend fun cancelRemove() = noteStorage.cancelRemove()
+
 }

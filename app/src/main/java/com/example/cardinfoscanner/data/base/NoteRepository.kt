@@ -8,4 +8,8 @@ interface NoteRepository {
 
     suspend fun setNoteList(note: Note)
 
+    suspend fun removeNote(note: Note)
+
+    suspend fun cancelRemove()
+
 }

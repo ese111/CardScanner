@@ -31,6 +31,8 @@ class NoteStorage @Inject constructor(
         flow.first()
     }.stateIn(scope = CoroutineScope(Job()), started = SharingStarted.Lazily, initialValue = emptyList())
 
+    private var originListCache: List<Note> = emptyList()
+
     suspend fun setNoteList(note: Note) {
         val list = mutableListOf<Note>()
         list.addAll(noteList.value)
@@ -39,4 +41,19 @@ class NoteStorage @Inject constructor(
         Timber.tag("AppTest").d("setNotesList : $list")
         noteDataStore.setNoteList(Json.encodeToString(list))
     }
+
+    suspend fun removeNote(note: Note) {
+        val list = mutableListOf<Note>()
+        setCachedOriginList()
+        list.addAll(noteList.value)
+        list.remove(note)
+        noteDataStore.setNoteList(Json.encodeToString(list))
+    }
+
+    private fun setCachedOriginList() {
+        originListCache = noteList.value
+    }
+
+    suspend fun cancelRemove() = noteDataStore.setNoteList(Json.encodeToString(originListCache))
+
 }
