@@ -44,7 +44,7 @@ object CameraDestination : Destination {
                 navToResult = { state ->
                     if (state.isNotEmpty()) {
                         val str = state.replace("/", "+")
-                        navController.navigateSingleTopTo("${NoteEditDestination.route}/$str")
+                        navController.navigateSingleTopToGraph("${NoteEditDestination.route}/$str")
                         return@CameraPreViewScreen
                     }
                     cameraState.uiState.scope.launch {

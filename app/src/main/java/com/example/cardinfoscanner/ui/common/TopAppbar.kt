@@ -128,8 +128,7 @@ fun DropMenuTopAppBar(
     backButtonVisible: Boolean = false,
     menuIcon: Painter = rememberVectorPainter(image = Icons.Filled.Menu),
     dropMenuItems: List<DropMenuState> = emptyList(),
-    onClickBackButton: () -> Unit = {},
-    onClickMenuButton: () -> Unit = {}
+    onClickBackButton: () -> Unit = {}
 ) {
     var dropMenuState: Boolean by remember { mutableStateOf(false) }
 
@@ -146,11 +145,9 @@ fun DropMenuTopAppBar(
                 modifier = Modifier
             ) {
                 dropMenuItems.forEach {
-                    Timber.i("fff ${it.name}")
                     DropdownMenuItem(
                         text = {
                             Text(text = it.name)
-                            Timber.i("fff ${it.name}")
                         },
                         onClick = {
                             it.onClick()

@@ -1,13 +1,17 @@
 package com.example.cardinfoscanner.ui.note.detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Scaffold
@@ -22,8 +26,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.cardinfoscanner.stateholder.note.NoteDetailState
@@ -31,28 +38,26 @@ import com.example.cardinfoscanner.stateholder.note.rememberNoteDetailState
 import com.example.cardinfoscanner.ui.common.DropMenuState
 import com.example.cardinfoscanner.ui.common.DropMenuTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
 @Composable
 fun NoteDetailScreen(
     state: NoteDetailState = rememberNoteDetailState(),
-    onClickUpButton: () -> Unit = {},
-    onClickEditMenu: () -> Unit = {}
+    onClickUpButton: () -> Unit = {}
 ) {
     var dialogState: Boolean by remember { mutableStateOf(false) }
-    var titleMode: MutableState<Boolean> = remember { mutableStateOf(true) }
-    var contentMode: MutableState<Boolean> = remember { mutableStateOf(true) }
     var title: String by remember { state.title }
     var content: String by remember { state.content }
-    val titleInteractionSource = remember { MutableInteractionSource() }
-    val contentInteractionSource = remember { MutableInteractionSource() }
-    val isTitlePressed: Boolean by titleInteractionSource.collectIsFocusedAsState()
-    val isContentPressed: Boolean by contentInteractionSource.collectIsFocusedAsState()
-    LaunchedEffect(key1 = isTitlePressed, key2 = isContentPressed) {
-        titleMode.value = isTitlePressed
-        contentMode.value = isContentPressed
-        Timber.i("titleMode : $titleMode contentMode $contentMode isContentPressed $isContentPressed isTitlePressed $isTitlePressed")
+    var isTitleFocus: Boolean by remember { mutableStateOf(false) }
+    var isContentFocus: Boolean by remember { mutableStateOf(false) }
+    val isVisible = isContentFocus || isTitleFocus
+    val focusManager = LocalFocusManager.current
+    BackHandler(enabled = isVisible) {
+        state.uiState.scope.launch {
+            focusManager.clearFocus()
+        }
     }
     if(dialogState) {
         NormalDialog(
@@ -60,10 +65,13 @@ fun NoteDetailScreen(
             phrase = "삭제된 데이터는 복구되지 않습니다.",
             confirmText = "확인",
             dismissText = "취소",
-            onConfirm = { state.removeNote(state.note.value) },
+            onConfirm = {
+                state.removeNote(state.note.value)
+                dialogState = false },
             onDismiss = { dialogState = false }
         )
     }
+
     Scaffold(
         topBar = {
             DropMenuTopAppBar(
@@ -86,19 +94,18 @@ fun NoteDetailScreen(
                 onValueChange = { str ->
                     title = str
                 },
-                readOnly = titleMode.value,
                 placeholder = {
                     Text(text = "제목 없음")
                 },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onFocusChanged { state -> isTitleFocus = state.hasFocus },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent,
                     errorContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent
-                ),
-                interactionSource = titleInteractionSource
+                )
             )
 
             TextField(
@@ -106,14 +113,13 @@ fun NoteDetailScreen(
                 onValueChange = { str ->
                     content = str
                 },
-                readOnly = contentMode.value,
-                interactionSource = contentInteractionSource,
                 placeholder = {
                     Text(text = "내용 없음")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(500.dp),
+                    .height(500.dp)
+                    .onFocusChanged { state -> isContentFocus = state.hasFocus },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent,

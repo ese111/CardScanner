@@ -26,9 +26,6 @@ fun NavGraphBuilder.noteGraph(
         composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
             NoteEditDestination.screen(navController, it.arguments, mainViewModel)
         }
-        composable(route = NoteEditDestination.routeWithId, arguments = NoteEditDestination.arguments) {
-            NoteEditDestination.screen(navController, it.arguments, mainViewModel)
-        }
         composable(route = NoteDetailDestination.routeWithArgs, arguments = NoteDetailDestination.arguments) {
             NoteDetailDestination.screen(navController, it.arguments, mainViewModel)
         }

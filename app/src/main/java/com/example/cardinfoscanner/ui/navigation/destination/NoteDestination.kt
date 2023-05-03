@@ -12,8 +12,7 @@ import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.navigateSingleTopTo
-import com.example.cardinfoscanner.navigateSingleTopToGraph
-import com.example.cardinfoscanner.stateholder.note.EditScreenTyp
+import com.example.cardinfoscanner.stateholder.note.Note
 import com.example.cardinfoscanner.stateholder.note.rememberNoteDetailState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteListState
 import com.example.cardinfoscanner.stateholder.note.rememberNoteState
@@ -46,29 +45,26 @@ object NotesDestination: Destination {
 object NoteEditDestination: Destination {
     override val route = Destination.noteEditRout
     private const val resultKey = "result"
-    private const val selectId = "note_id"
     val routeWithArgs = "$route/{$resultKey}"
-    val routeWithId = "$route/{$selectId}"
     val arguments = listOf(
-        navArgument(resultKey) { type = NavType.StringType },
-        navArgument(selectId) { type = NavType.LongType }
+        navArgument(resultKey) { type = NavType.StringType }
     )
-    var type: EditScreenTyp = EditScreenTyp.New(resultKey)
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, bundle, _ ->
         navController.currentBackStackEntry?.let {
             val viewModel: NoteEditViewModel = hiltViewModel(it)
-            NoteEditScreen(
-                state = rememberNoteState(
-                    type = type,
-                    bundle = bundle,
-                    setNote = viewModel::setNotesList,
-                    getNote = viewModel::getNote
-                ),
-                onClickSave = {
-                    navController.navigateSingleTopTo(NotesDestination.route)
-                },
-                onClickCancel = { navController.navigateUp() }
-            )
+            bundle?.getString(resultKey)?.let { scanText ->
+                val content = scanText.replace("+", "/")
+                NoteEditScreen(
+                    state = rememberNoteState(
+                        setNote = viewModel::setNotesList,
+                        note = remember { mutableStateOf(Note(content = content)) }
+                    ),
+                    onClickSave = {
+                        navController.navigateSingleTopTo(NotesDestination.route)
+                    },
+                    onClickCancel = { navController.navigateUp() }
+                )
+            }
         }
     }
 }
@@ -87,10 +83,12 @@ object NoteDetailDestination: Destination {
                 NoteDetailScreen(
                     state = rememberNoteDetailState(
                         note = remember { mutableStateOf(viewModel.getNoteDetail(id)) },
-                        removeNote = { }
+                        removeNote = { note ->
+                            viewModel.removeNote(note)
+                            navController.navigateUp()
+                        }
                     ),
-                    onClickUpButton = navController::navigateUp,
-                    onClickEditMenu = { navController.navigateSingleTopTo(route = "${NoteEditDestination.route}/$id")},
+                    onClickUpButton = navController::navigateUp
                 )
             }
         }
