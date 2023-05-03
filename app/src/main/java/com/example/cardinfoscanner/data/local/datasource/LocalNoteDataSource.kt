@@ -15,4 +15,6 @@ class LocalNoteDataSource @Inject constructor(
 
     override suspend fun cancelRemove() = noteStorage.cancelRemove()
 
+    override fun getNoteDetail(id: Long) = noteStorage.getNoteDetail(id)
+
 }

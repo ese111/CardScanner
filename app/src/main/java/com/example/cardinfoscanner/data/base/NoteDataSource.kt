@@ -11,4 +11,6 @@ interface NoteDataSource {
     suspend fun removeNote(note: Note)
 
     suspend fun cancelRemove()
+
+    fun getNoteDetail(id: Long): Note
 }

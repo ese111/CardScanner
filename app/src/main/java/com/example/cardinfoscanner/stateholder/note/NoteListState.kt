@@ -21,9 +21,9 @@ class NoteListState(
 @Serializable
 data class Note(
     val id: Long = -1,
-    val title: String,
-    val content: String,
-    val date: String
+    val title: String = "",
+    val content: String = "",
+    val date: String = ""
 ): java.io.Serializable
 
 @OptIn(ExperimentalComposeUiApi::class)

@@ -54,7 +54,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun NoteListScreen(
     state: NoteListState,
-    onClickMenuButton: () -> Unit
+    onClickMenuButton: () -> Unit = {},
+    onClickNote: (Long) -> Unit = {}
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -66,7 +67,6 @@ fun NoteListScreen(
                 onClickMenuButton = onClickMenuButton
             )
         },
-        contentColor = MaterialTheme.colorScheme.onSurface,
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
@@ -115,7 +115,8 @@ fun NoteListScreen(
                                 duration = SnackbarDuration.Short
                             )
                         }
-                    }
+                    },
+                    onClickItem = { onClickNote(item.id) }
                 )
             }
         }
@@ -126,10 +127,11 @@ fun NoteListScreen(
 fun NoteItem(
     modifier: Modifier = Modifier,
     note: Note,
-    removeNote: () -> Unit
+    removeNote: () -> Unit = {},
+    onClickItem: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier.padding(8.dp).clickable { onClickItem() },
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -233,7 +235,6 @@ private fun NoteScreenPreview() {
 private fun NoteItemPreview() {
     NoteItem(
         note = Note(0, "인공눈물 설명서", "하루에 1번 뚜껑을 따서...", "2023.03.03"),
-        removeNote = {}
     )
 }
 

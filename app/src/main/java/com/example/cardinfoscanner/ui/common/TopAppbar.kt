@@ -1,23 +1,44 @@
 package com.example.cardinfoscanner.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.cardinfoscanner.R
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,6 +117,88 @@ fun MenuIconTopAppBar(
     )
 }
 
+data class DropMenuState(
+    val name: String,
+    val onClick: () -> Unit
+)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropMenuTopAppBar(
+    title: String,
+    backButtonVisible: Boolean = false,
+    menuIcon: Painter = rememberVectorPainter(image = Icons.Filled.Menu),
+    dropMenuItems: List<DropMenuState> = emptyList(),
+    onClickBackButton: () -> Unit = {},
+    onClickMenuButton: () -> Unit = {}
+) {
+    var dropMenuState: Boolean by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+        ) {
+            DropdownMenu(
+                expanded = dropMenuState,
+                onDismissRequest = { dropMenuState = false },
+                offset = DpOffset(x = 240.dp, y = 50.dp),
+                modifier = Modifier
+            ) {
+                dropMenuItems.forEach {
+                    Timber.i("fff ${it.name}")
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = it.name)
+                            Timber.i("fff ${it.name}")
+                        },
+                        onClick = {
+                            it.onClick()
+                            dropMenuState = false
+                        }
+                    )
+                }
+            }
+        }
+
+        TopAppBar(
+            title = {
+                Text(
+                    text = title
+                )
+            },
+            navigationIcon = {
+                if (backButtonVisible) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            modifier = Modifier
+                                .clickable {
+                                    onClickBackButton()
+                                }
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
+                }
+            },
+            actions = {
+                Row {
+                    Icon(
+                        painter = menuIcon,
+                        contentDescription = "Menu",
+                        modifier = Modifier
+                            .clickable {
+                                dropMenuState = true
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+            }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuTextTopAppBar(
@@ -159,4 +262,22 @@ private fun MenuIconTopAppBarPreview() {
 @Preview(showBackground = true)
 private fun MenuTextTopAppBarPreview() {
     MenuTextTopAppBar(title = "Note", backButtonVisible = true, menuText = "저장")
+}
+@Composable
+@Preview(showBackground = true)
+private fun DropMenuTopAppBarPreview() {
+    Scaffold(
+        topBar = {
+            DropMenuTopAppBar(title = "Note", backButtonVisible = true, dropMenuItems = listOf(
+                DropMenuState("수정하기", {}),
+                DropMenuState("추가하기", {})
+            )
+            )
+        }
+    ) {
+        Column(Modifier.padding(it)) {
+            
+        }
+    }
+
 }

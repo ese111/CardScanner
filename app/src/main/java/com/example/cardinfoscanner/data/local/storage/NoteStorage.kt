@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -21,6 +22,9 @@ import javax.inject.Singleton
 class NoteStorage @Inject constructor(
     private val noteDataStore: NoteDataStore
 ) {
+    private var originListCache: List<Note> = emptyList()
+    private var lastIdCache: Long = 0
+
     val noteList: StateFlow<List<Note>> = noteDataStore.
     getNoteList().map { pref ->
         val flow = pref.asMap().values.toList().map { item ->
@@ -28,15 +32,17 @@ class NoteStorage @Inject constructor(
             val list = Json.decodeFromString<List<Note>>(item.toString())
             list
         }
-        flow.first()
+        val list = flow.last()
+        lastIdCache = list.maxOf { it.id }
+        list
     }.stateIn(scope = CoroutineScope(Job()), started = SharingStarted.Lazily, initialValue = emptyList())
 
-    private var originListCache: List<Note> = emptyList()
+
 
     suspend fun setNoteList(note: Note) {
         val list = mutableListOf<Note>()
         list.addAll(noteList.value)
-        val newNote = note.copy(id = list.size.toLong())
+        val newNote = note.copy(id = ++lastIdCache)
         list.add(newNote)
         Timber.tag("AppTest").d("setNotesList : $list")
         noteDataStore.setNoteList(Json.encodeToString(list))
@@ -55,5 +61,7 @@ class NoteStorage @Inject constructor(
     }
 
     suspend fun cancelRemove() = noteDataStore.setNoteList(Json.encodeToString(originListCache))
+
+    fun getNoteDetail(id: Long) = noteList.value.single { it.id == id }
 
 }

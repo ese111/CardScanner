@@ -7,8 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
+import com.example.cardinfoscanner.ui.navigation.destination.NoteDetailDestination
 import com.example.cardinfoscanner.ui.navigation.destination.NoteEditDestination
 import com.example.cardinfoscanner.ui.navigation.destination.NotesDestination
+import com.example.cardinfoscanner.ui.note.detail.NoteDetailScreen
 
 @Stable
 fun NavGraphBuilder.noteGraph(
@@ -23,6 +25,12 @@ fun NavGraphBuilder.noteGraph(
         }
         composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
             NoteEditDestination.screen(navController, it.arguments, mainViewModel)
+        }
+        composable(route = NoteEditDestination.routeWithId, arguments = NoteEditDestination.arguments) {
+            NoteEditDestination.screen(navController, it.arguments, mainViewModel)
+        }
+        composable(route = NoteDetailDestination.routeWithArgs, arguments = NoteDetailDestination.arguments) {
+            NoteDetailDestination.screen(navController, it.arguments, mainViewModel)
         }
     }
 }

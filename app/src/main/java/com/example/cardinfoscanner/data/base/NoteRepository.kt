@@ -12,4 +12,6 @@ interface NoteRepository {
 
     suspend fun cancelRemove()
 
+    fun getNoteDetail(id: Long): Note
+
 }

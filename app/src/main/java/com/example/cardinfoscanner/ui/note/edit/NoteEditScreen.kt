@@ -1,4 +1,4 @@
-package com.example.cardinfoscanner.ui.note.detail
+package com.example.cardinfoscanner.ui.note.edit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -13,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +28,6 @@ import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.toLocalDateTime
 
 @Composable

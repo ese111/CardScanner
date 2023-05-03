@@ -18,6 +18,7 @@ interface Destination {
         internal const val noteHomeRout = "home/note"
         internal const val noteListRout = "home/note/list"
         internal const val noteEditRout = "home/note/edit"
+        internal const val noteDetailRout = "home/note/detail"
         internal const val settingHomeRout = "home/setting"
         internal const val settingRout = "home/setting/main"
     }

@@ -23,4 +23,7 @@ class NoteEditViewModel @Inject constructor(
     fun setNotesList(note: Note) = viewModelScope.launch {
         noteRepository.setNoteList(note)
     }
+
+    fun getNote(id: Long) = noteRepository.getNoteDetail(id)
+
 }
