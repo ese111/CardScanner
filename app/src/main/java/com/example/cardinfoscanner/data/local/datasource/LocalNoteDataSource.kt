@@ -2,7 +2,7 @@ package com.example.cardinfoscanner.data.local.datasource
 
 import com.example.cardinfoscanner.data.base.NoteDataSource
 import com.example.cardinfoscanner.data.local.storage.NoteStorage
-import com.example.cardinfoscanner.stateholder.note.Note
+import com.example.cardinfoscanner.data.local.model.Note
 import javax.inject.Inject
 
 class LocalNoteDataSource @Inject constructor(

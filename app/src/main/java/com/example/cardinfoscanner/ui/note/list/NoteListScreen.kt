@@ -14,13 +14,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -29,12 +27,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -44,18 +41,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cardinfoscanner.R
-import com.example.cardinfoscanner.stateholder.note.Note
-import com.example.cardinfoscanner.stateholder.note.NoteListState
-import com.example.cardinfoscanner.stateholder.note.rememberNoteListState
+import com.example.cardinfoscanner.stateholder.common.BaseUiState
+import com.example.cardinfoscanner.stateholder.common.rememberUiState
+import com.example.cardinfoscanner.data.local.model.Note
 import com.example.cardinfoscanner.ui.common.MenuIconTopAppBar
-import com.example.cardinfoscanner.ui.common.NormalDialog
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NoteListScreen(
-    state: NoteListState,
+    uiState: BaseUiState = rememberUiState(),
+    noteListState: State<List<Note>> = remember { mutableStateOf(emptyList()) },
     onClickMenuButton: () -> Unit = {},
-    onClickNote: (Long) -> Unit = {}
+    onClickNote: (Long) -> Unit = {},
+    onRemoveNote: (Note) -> Unit = {},
+    onCancelRemove: () -> Unit = {}
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -74,7 +74,7 @@ fun NoteListScreen(
             ) { data ->
                 Snackbar(
                     action = {
-                        TextButton(onClick = state.onCancelRemove) {
+                        TextButton(onClick = onCancelRemove) {
                             data.visuals.actionLabel?.let { Text(text = it) }
                         }
                     }
@@ -85,7 +85,7 @@ fun NoteListScreen(
         }
     ) { paddingValues ->
 
-        if(state.noteList.value.isEmpty()) {
+        if(noteListState.value.isEmpty()) {
             EmptyNoteItem(
                 Modifier.padding(paddingValues = paddingValues),
                 onClick = onClickMenuButton
@@ -103,12 +103,12 @@ fun NoteListScreen(
                 bottom = 16.dp
             )
         ) {
-            items(items = state.noteList.value, key = { note -> note.id }) { item ->
+            items(items = noteListState.value, key = { note -> note.id }) { item ->
                 NoteItem(
                     note = item,
                     removeNote = {
-                        state.onRemoveNote(item)
-                        state.uiState.scope.launch {
+                        onRemoveNote(item)
+                        uiState.scope.launch {
                             snackBarHostState.showSnackbar(
                                 message = "삭제 완료",
                                 actionLabel = "실행 취소",
@@ -131,7 +131,9 @@ fun NoteItem(
     onClickItem: () -> Unit = {}
 ) {
     Card(
-        modifier = modifier.padding(8.dp).clickable { onClickItem() },
+        modifier = modifier
+            .padding(8.dp)
+            .clickable { onClickItem() },
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -222,12 +224,7 @@ private fun NoteScreenPreview() {
             "22.04.24"
         )
     )
-    NoteListScreen(
-        state = rememberNoteListState(
-            noteList = remember { mutableStateOf(list) }
-        ),
-        onClickMenuButton = {}
-    )
+    NoteListScreen()
 }
 
 @Preview(showBackground = true)

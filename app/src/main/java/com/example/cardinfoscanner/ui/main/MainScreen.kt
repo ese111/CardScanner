@@ -73,25 +73,19 @@ fun CardScannerApp(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = noteHomeRout,
+            startDestination = noteListRout,
             modifier = Modifier.padding(paddingValues)
         ) {
             noteGraph(
                 navController = navController,
-                startDestination = noteListRout,
-                route = noteHomeRout,
                 mainViewModel = mainViewModel
             )
             cameraGraph(
                 navController = navController,
-                startDestination = cameraRoute,
-                route = cameraHomeRoute,
                 mainViewModel = mainViewModel
             )
             settingGraph(
                 navController = navController,
-                startDestination = settingRout,
-                route = settingHomeRout,
                 mainViewModel = mainViewModel
             )
         }

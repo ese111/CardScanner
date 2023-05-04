@@ -2,7 +2,7 @@ package com.example.cardinfoscanner.data.local.repository
 
 import com.example.cardinfoscanner.data.base.NoteDataSource
 import com.example.cardinfoscanner.data.base.NoteRepository
-import com.example.cardinfoscanner.stateholder.note.Note
+import com.example.cardinfoscanner.data.local.model.Note
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -15,19 +15,15 @@ import com.example.cardinfoscanner.ui.note.detail.NoteDetailScreen
 @Stable
 fun NavGraphBuilder.noteGraph(
     navController: NavHostController,
-    startDestination: String,
-    route: String,
     mainViewModel: MainViewModel
 ) {
-    navigation(startDestination = startDestination, route = route) {
-        composable(route = Destination.noteListRout) {
-            NotesDestination.screen(navController, it.arguments, mainViewModel)
-        }
-        composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
-            NoteEditDestination.screen(navController, it.arguments, mainViewModel)
-        }
-        composable(route = NoteDetailDestination.routeWithArgs, arguments = NoteDetailDestination.arguments) {
-            NoteDetailDestination.screen(navController, it.arguments, mainViewModel)
-        }
+    composable(route = Destination.noteListRout) {
+        NotesDestination.screen(navController, it.arguments, mainViewModel)
+    }
+    composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
+        NoteEditDestination.screen(navController, it.arguments, mainViewModel)
+    }
+    composable(route = NoteDetailDestination.routeWithArgs, arguments = NoteDetailDestination.arguments) {
+        NoteDetailDestination.screen(navController, it.arguments, mainViewModel)
     }
 }

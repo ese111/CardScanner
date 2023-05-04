@@ -16,17 +16,13 @@ import javax.inject.Inject
 @Stable
 fun NavGraphBuilder.cameraGraph(
     navController: NavHostController,
-    startDestination: String,
-    route: String,
     mainViewModel: MainViewModel
 ) {
-    navigation(startDestination = startDestination, route = route) {
-        composable(route = cameraRoute) {
-            CameraDestination.screen(navController, it.arguments, mainViewModel)
-        }
-        composable(route = permissionRoute) {
-            PermissionDestination.screen(navController, it.arguments, mainViewModel)
-        }
+    composable(route = cameraRoute) {
+        CameraDestination.screen(navController, it.arguments, mainViewModel)
+    }
+    composable(route = permissionRoute) {
+        PermissionDestination.screen(navController, it.arguments, mainViewModel)
     }
 }
 

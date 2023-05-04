@@ -12,13 +12,9 @@ import com.example.cardinfoscanner.ui.navigation.destination.SettingDestination
 @Stable
 fun NavGraphBuilder.settingGraph(
     navController: NavHostController,
-    startDestination: String,
-    route: String,
     mainViewModel: MainViewModel
 ) {
-    navigation(startDestination = startDestination, route = route) {
-        composable(route = Destination.settingRout) {
-            SettingDestination.screen(navController, it.arguments, mainViewModel)
-        }
+    composable(route = Destination.settingRout) {
+        SettingDestination.screen(navController, it.arguments, mainViewModel)
     }
 }

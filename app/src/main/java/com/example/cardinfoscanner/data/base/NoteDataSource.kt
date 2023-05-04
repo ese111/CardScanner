@@ -1,6 +1,6 @@
 package com.example.cardinfoscanner.data.base
 
-import com.example.cardinfoscanner.stateholder.note.Note
+import com.example.cardinfoscanner.data.local.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteDataSource {

@@ -12,29 +12,35 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.cardinfoscanner.stateholder.note.Note
-import com.example.cardinfoscanner.stateholder.note.NoteEditState
-import com.example.cardinfoscanner.stateholder.note.rememberNoteState
+import com.example.cardinfoscanner.data.local.model.Note
+import com.example.cardinfoscanner.stateholder.common.BaseUiState
+import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NoteEditScreen(
-    state: NoteEditState = rememberNoteState(),
     onClickSave: () -> Unit = {},
-    onClickCancel: () -> Unit = {}
+    onClickCancel: () -> Unit = {},
+    uiState: BaseUiState = rememberUiState(),
+    note: MutableState<Note> = remember { mutableStateOf(Note()) },
+    setNote: (Note) -> Unit = {}
 ) {
     var dialogState by remember { mutableStateOf(false) }
     var saveDialog by remember { mutableStateOf(false) }
@@ -60,10 +66,10 @@ fun NoteEditScreen(
             dismissText = "취소",
             onConfirm = {
                 saveDialog = false
-                state.setNote(
+                setNote(
                     Note(
-                        title = state.title.value,
-                        content = state.content.value,
+                        title = note.value.title,
+                        content = note.value.content,
                         date = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date}"
                     )
                 )
@@ -89,16 +95,16 @@ fun NoteEditScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            NoteTitleEditor(text = state.title.value, placeHolder = "제목 없음") { value ->
-                state.title.value = value
+            NoteTitleEditor(text = note.value.title, placeHolder = "제목 없음") { value ->
+                note.value = note.value.copy(title = value)
             }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(15.dp)
             )
-            NoteContentEditor(text = state.content.value, placeHolder = "내용") { value ->
-                state.content.value = value
+            NoteContentEditor(text = note.value.content, placeHolder = "내용") { value ->
+                note.value = note.value.copy(content = value)
             }
         }
     }
@@ -123,7 +129,13 @@ private fun NoteTitleEditor(
             Text(text = placeHolder)
         },
         shape = RoundedCornerShape(16.dp),
-        maxLines = 1
+        maxLines = 1,
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
 
@@ -146,6 +158,12 @@ private fun NoteContentEditor(
             Text(text = placeHolder)
         },
         shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
 

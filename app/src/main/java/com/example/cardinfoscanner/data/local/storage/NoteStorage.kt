@@ -1,14 +1,11 @@
 package com.example.cardinfoscanner.data.local.storage
 
-import androidx.lifecycle.viewModelScope
 import com.example.cardinfoscanner.data.local.datastore.NoteDataStore
-import com.example.cardinfoscanner.stateholder.note.Note
+import com.example.cardinfoscanner.data.local.model.Note
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.decodeFromString
