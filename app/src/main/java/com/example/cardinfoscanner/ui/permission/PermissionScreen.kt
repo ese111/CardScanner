@@ -1,6 +1,7 @@
 package com.example.cardinfoscanner.ui.permission
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -50,38 +51,72 @@ fun FeatureThatRequiresCameraPermission(
                 .padding(paddingValues = paddingValues)
                 .padding(12.dp)
         ){
-            Text(
-                text = if (cameraPermissionState.status.shouldShowRationale) {
-                    "The camera is important for this app. Please grant the permission."
-                } else {
-                    "Camera permission required for this feature to be available. Please grant the permission"
-                }
-            )
+            PermissionTitle(cameraPermissionState.status.shouldShowRationale)
             Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
-            Button(
-                onClick = {
-                    if (cameraPermissionState.status.isGranted) {
-                        moveToNext()
-                    } else {
-                        if (cameraPermissionState.status.shouldShowRationale) {
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.parse("package:" + context.packageName)
-                                context.startActivity(this)
-                            }
-                        } else {
-                            cameraPermissionState.launchPermissionRequest()
-                        }
-                    }
-                }
-            ) {
-                Text("Request permission")
-            }
+            PermissionButton(
+                isGranted = cameraPermissionState.status.isGranted,
+                context = context,
+                shouldShowRationale = cameraPermissionState.status.shouldShowRationale,
+                moveToNext = moveToNext,
+                launchPermissionRequest = cameraPermissionState::launchPermissionRequest
+            )
         }
+    }
+}
+
+@Composable
+private fun PermissionTitle(shouldShowRationale: Boolean) {
+    Text(
+        text = if (shouldShowRationale) {
+            "카메라 권한이 중요합니다. 카메라 권한을 허가해주세요!"
+        } else {
+            "카메라 권한을 허용해주셔야 유용한 앱사용이 가능합니다."
+        }
+    )
+}
+
+@Composable
+private fun PermissionButton(
+    isGranted: Boolean = false,
+    context: Context = LocalContext.current,
+    shouldShowRationale: Boolean = false,
+    moveToNext: () -> Unit = {},
+    launchPermissionRequest: () -> Unit = {}
+) {
+    Button(
+        onClick = {
+            if (isGranted) {
+                moveToNext()
+                return@Button
+            }
+            if (shouldShowRationale) {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:" + context.packageName)
+                    context.startActivity(this)
+                }
+                return@Button
+            }
+            launchPermissionRequest()
+        }
+    ) {
+        Text("권한 허가")
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PermissionScreenPreview() {
+private fun PermissionScreenPreview() {
     FeatureThatRequiresCameraPermission {}
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PermissionPreview() {
+    PermissionTitle(true)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PermissionButtonPreview() {
+    PermissionButton()
 }

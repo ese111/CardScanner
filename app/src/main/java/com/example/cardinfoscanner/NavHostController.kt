@@ -21,11 +21,3 @@ fun NavHostController.navigateSingleTopTo(route: String, isInclusive: Boolean = 
         launchSingleTop = true
 //        restoreState = true
     }
-fun NavHostController.navigateClearTo(route: String, isInclusive: Boolean = false) =
-    navigate(route) {
-        popUpTo(route) {
-            inclusive = isInclusive
-        }
-        launchSingleTop = true
-        restoreState = true
-    }

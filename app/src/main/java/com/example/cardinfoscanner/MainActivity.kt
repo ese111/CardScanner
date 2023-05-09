@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
+import com.example.cardinfoscanner.stateholder.app.rememberAppState
 import com.example.cardinfoscanner.ui.main.CardScannerApp
 import com.example.cardinfoscanner.ui.theme.CardInfoScannerTheme
 import com.example.cardinfoscanner.util.CameraUtil
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CardScannerApp(viewModel)
+                    CardScannerApp(rememberAppState())
                 }
             }
         }

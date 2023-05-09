@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -41,10 +42,13 @@ import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.navigateSingleTopTo
 import com.example.cardinfoscanner.navigateSingleTopToGraph
+import com.example.cardinfoscanner.stateholder.app.AppState
+import com.example.cardinfoscanner.stateholder.app.rememberAppState
 import com.example.cardinfoscanner.ui.common.BottomNavBar
 import com.example.cardinfoscanner.ui.navigation.graph.cameraGraph
 import com.example.cardinfoscanner.ui.navigation.graph.noteGraph
 import com.example.cardinfoscanner.ui.navigation.graph.settingGraph
+import com.example.cardinfoscanner.ui.navigation.navhost.ScannerNavHost
 
 enum class BottomNavItem(val route: String, @DrawableRes val icon: Int, @StringRes val title: Int) {
     Notes(noteListRout, R.drawable.ic_note_list_bulleted, R.string.bottom_navigation_note_list_title),
@@ -53,52 +57,33 @@ enum class BottomNavItem(val route: String, @DrawableRes val icon: Int, @StringR
 
 @Composable
 fun CardScannerApp(
-    mainViewModel: MainViewModel
+    appState: AppState = rememberAppState(),
+    mainViewModel: MainViewModel = hiltViewModel()
 ) {
-    val navController = rememberNavController()
-    var bottomBarVisible by remember { mutableStateOf(false) }
-
     Scaffold(
         bottomBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val navBackStackEntry by appState.navHostController.currentBackStackEntryAsState()
 
             val items = listOf(
                 BottomNavItem.Notes,
                 BottomNavItem.Setting
             )
-            if(bottomBarVisible) {
-                BottomNavBar(items = items, navBackStackEntry = navBackStackEntry, onClickBottomMenu = { item -> navController.navigateSingleTopToGraph(item.route) })
+            if(appState.bottomBarVisible) {
+                BottomNavBar(items = items, navBackStackEntry = navBackStackEntry, onClickBottomMenu = { item -> appState.navHostController.navigateSingleTopToGraph(item.route) })
             }
         }
     ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = noteListRout,
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            noteGraph(
-                navController = navController,
-                mainViewModel = mainViewModel
-            )
-            cameraGraph(
-                navController = navController,
-                mainViewModel = mainViewModel
-            )
-            settingGraph(
-                navController = navController,
-                mainViewModel = mainViewModel
-            )
-        }
+        ScannerNavHost(
+            modifier = Modifier.padding(paddingValues = paddingValues),
+            navController = appState.navHostController,
+            mainViewModel = mainViewModel
+        )
     }
 
-    navController.addOnDestinationChangedListener { _, destination, _ ->
-        bottomBarVisible = when(destination.route) {
-            noteListRout, settingRout -> {
-                true
-            }
-            else -> {
-                false
-            }
+    appState.navHostController.addOnDestinationChangedListener { _, destination, _ ->
+        appState.bottomBarVisible = when(destination.route) {
+            noteListRout, settingRout -> true
+            else -> false
         }
     }
 }

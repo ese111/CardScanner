@@ -96,37 +96,6 @@ fun CameraPreViewScreen(
     }
 }
 
-@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
-@Composable
-private fun CameraPreView(
-    lifecycleOwner: LifecycleOwner,
-    cameraUtil: CameraUtil
-) {
-    AndroidView(
-        factory = {
-            cameraUtil.onBindScannerPreview(
-                lifecycleOwner = lifecycleOwner
-            )
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(600.dp)
-    )
-}
-
-@Composable
-private fun CameraButton(
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .height(60.dp)
-            .width(60.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-    ) {}
-}
-
 
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
