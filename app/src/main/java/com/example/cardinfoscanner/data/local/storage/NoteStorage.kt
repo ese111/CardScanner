@@ -25,12 +25,15 @@ class NoteStorage @Inject constructor(
 
     val noteMap: StateFlow<Map<Long, Note>> = noteDataStore.
     getNoteList().map { pref ->
-        val flow = pref.asMap().values.map { item ->
+        val map = mutableMapOf<Long, Note>()
+        pref.asMap().values.map { item ->
             Timber.tag("AppTest").d("getNotList : $item")
-            val list = Json.decodeFromString<List<Note>>(item.toString())
-            list.map { mapOf(it.id to it) }.lastOrNull()
+            Json.decodeFromString<List<Note>>(item.toString())
+        }.forEach {
+            it.forEach { note ->
+                map[note.id] = note
+            }
         }
-        val map = flow.lastOrNull() ?: emptyMap()
         map.keys.maxOrNull()?.let { lastIdCache = it }
         map
     }.stateIn(scope = CoroutineScope(Job()), started = SharingStarted.Lazily, initialValue = emptyMap())

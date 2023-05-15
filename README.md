@@ -38,7 +38,6 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 
 ## Contact
 
-Please get in touch with me via email if you're interested in my technical experience and all techs which are applied into Profiler. Also visit my LinkedIn profile if you want to know more about me. Here is my email address below:
 
 Email : feung94@gmail.com
 

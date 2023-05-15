@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
@@ -93,9 +95,8 @@ fun NoteListScreen(
             return@Scaffold
         }
 
-        LazyVerticalGrid(
+        LazyColumn(
             modifier = Modifier.padding(paddingValues = paddingValues),
-            columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(
                 start = 12.dp,
                 top = 16.dp,
@@ -159,7 +160,7 @@ fun NoteItem(
             Spacer(
                 modifier = Modifier.height(12.dp)
             )
-            Text(text = note.content, fontSize = 14.sp, overflow = TextOverflow.Ellipsis, maxLines = 4)
+            Text(text = note.content, fontSize = 14.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
             Spacer(
                 modifier = Modifier.height(15.dp)
             )
