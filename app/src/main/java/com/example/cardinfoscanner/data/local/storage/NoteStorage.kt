@@ -2,6 +2,7 @@ package com.example.cardinfoscanner.data.local.storage
 
 import com.example.cardinfoscanner.data.local.datastore.NoteDataStore
 import com.example.cardinfoscanner.data.local.model.Note
+import com.example.cardinfoscanner.ui.note.detail.NoteDetailUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,46 +20,59 @@ import javax.inject.Singleton
 class NoteStorage @Inject constructor(
     private val noteDataStore: NoteDataStore
 ) {
-    private var originListCache: List<Note> = emptyList()
-    private var lastIdCache: Long = 0
+    private var originListCache: Map<Long, Note> = emptyMap<Long, Note>()
+    private var lastIdCache: Long = -1
 
-    val noteList: StateFlow<List<Note>> = noteDataStore.
+    val noteMap: StateFlow<Map<Long, Note>> = noteDataStore.
     getNoteList().map { pref ->
-        val flow = pref.asMap().values.toList().map { item ->
+        val flow = pref.asMap().values.map { item ->
             Timber.tag("AppTest").d("getNotList : $item")
             val list = Json.decodeFromString<List<Note>>(item.toString())
-            list
+            list.map { mapOf(it.id to it) }.lastOrNull()
         }
-        val list = flow.last()
-        lastIdCache = list.maxOf { it.id }
-        list
-    }.stateIn(scope = CoroutineScope(Job()), started = SharingStarted.Lazily, initialValue = emptyList())
-
-
+        val map = flow.lastOrNull() ?: emptyMap()
+        map.keys.maxOrNull()?.let { lastIdCache = it }
+        map
+    }.stateIn(scope = CoroutineScope(Job()), started = SharingStarted.Lazily, initialValue = emptyMap())
 
     suspend fun setNoteList(note: Note) {
-        val list = mutableListOf<Note>()
-        list.addAll(noteList.value)
+        val map = mutableMapOf<Long, Note>()
+        map.putAll(noteMap.value)
         val newNote = note.copy(id = ++lastIdCache)
-        list.add(newNote)
-        Timber.tag("AppTest").d("setNotesList : $list")
-        noteDataStore.setNoteList(Json.encodeToString(list))
+        map[newNote.id] = newNote
+        Timber.tag("AppTest").d("setNotesList : $map")
+        noteDataStore.setNoteList(Json.encodeToString(map.values.toList()))
     }
 
     suspend fun removeNote(note: Note) {
-        val list = mutableListOf<Note>()
+        val map = mutableMapOf<Long, Note>()
         setCachedOriginList()
-        list.addAll(noteList.value)
-        list.remove(note)
-        noteDataStore.setNoteList(Json.encodeToString(list))
+        map.putAll(noteMap.value)
+        map.remove(note.id)
+        Timber.tag("AppTest").d("removeNote : $map")
+        noteDataStore.setNoteList(Json.encodeToString(map.values.toList()))
+    }
+
+    suspend fun saveNote(note: Note) {
+        val map = mutableMapOf<Long, Note>()
+        setCachedOriginList()
+        map.putAll(noteMap.value)
+        map[note.id] = note
+        noteDataStore.setNoteList(Json.encodeToString(map.values.toList()))
     }
 
     private fun setCachedOriginList() {
-        originListCache = noteList.value
+        originListCache = noteMap.value
     }
 
     suspend fun cancelRemove() = noteDataStore.setNoteList(Json.encodeToString(originListCache))
 
-    fun getNoteDetail(id: Long) = noteList.value.single { it.id == id }
+    fun getNoteDetail(id: Long): NoteDetailUiState {
+        val result = noteMap.value[id]
+        return when(result != null) {
+            true -> NoteDetailUiState.Success(result)
+            false -> NoteDetailUiState.Loading
+        }
+    }
 
 }

@@ -149,9 +149,7 @@ fun NoteItem(
                     modifier = Modifier
                         .width(16.dp)
                         .height(16.dp)
-                        .clickable {
-                            removeNote()
-                        }
+                        .clickable { removeNote() }
                 )
             }
             Spacer(

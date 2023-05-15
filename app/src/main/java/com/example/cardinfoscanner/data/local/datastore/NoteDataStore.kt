@@ -28,4 +28,5 @@ class NoteDataStore @Inject constructor(
             pref[NOTES] = json
         }
     }
+
 }
