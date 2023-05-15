@@ -11,21 +11,9 @@
 Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigation + ML kit + CameraX
 
 <p align="left">
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_1.jpg" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/dev/screen1.png" width="24%" height="24%">
 
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_2.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_3.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_7.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_8.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_4.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_5.jpg" width="24%" height="24%">
-
-<img src="https://github.com/Lukoh/Profiler/blob/main/Screenshot_6.jpg" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/dev/screen_list.png" width="24%" height="24%">
 </p>                                                                                            
 
 ## Introduce
