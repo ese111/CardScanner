@@ -2,49 +2,48 @@ package com.example.cardinfoscanner.ui.camera
 
 import android.Manifest
 import android.view.View
-import androidx.camera.core.ImageCapture
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.example.cardinfoscanner.stateholder.camera.CameraScreenState
+import com.example.cardinfoscanner.stateholder.common.BaseUiState
+import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.ui.common.CardSnackBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
-import com.example.cardinfoscanner.util.CallBack
+import com.example.cardinfoscanner.ui.common.BasicTopAppBar
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
+import timber.log.Timber
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CameraPreViewScreen(
+    dialogState: MutableState<Boolean>,
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    cameraUtil: CameraUtil,
     navToResult: (String) -> Unit,
-    navToPermission: () -> Unit
+    navToPermission: () -> Unit,
+    onUpButtonClick: () -> Unit,
+    uiState: BaseUiState = rememberUiState(),
+    value: MutableState<String> = remember{ mutableStateOf("") }
 ) {
     val cameraPermissionState = rememberPermissionState(
         Manifest.permission.CAMERA
@@ -52,118 +51,48 @@ fun CameraPreViewScreen(
     if (!cameraPermissionState.status.isGranted) {
         navToPermission()
     }
-    val snackBarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    var value by remember { mutableStateOf("") }
-    var dialogState by remember { mutableStateOf(false) }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val cameraUtil = remember {
-        CameraUtil(context = context)
-            .setCallback(
-                CallBack.OnBarcodeScanSuccessListener { str ->
-                    value = str
-                    dialogState = true
-                }
-            ).setCallback(
-                CallBack.OnBarcodeScanErrorListener { str ->
-                    scope.launch {
-                        snackBarHostState.showSnackbar(str)
-                    }
-                }
-            ).setCallback(
-                CallBack.OnCaptureSuccessListener { str ->
-                    value = str
-                    dialogState = true
-                }
-            ).setCallback(
-                CallBack.OnCaptureErrorListener { str ->
-                    scope.launch {
-                        snackBarHostState.showSnackbar(str)
-                    }
-                }
-            )
-    }
 
     Scaffold(
         snackbarHost = {
             SnackbarHost(
-                hostState = snackBarHostState,
+                hostState = snackbarHostState
             ) {
                 CardSnackBar(snackbarData = it)
             }
         },
         topBar = {
-            Text(text = "Card Scanner", modifier = Modifier.padding(18.dp))
+            BasicTopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
         }
     ) { paddingValues ->
-        if (dialogState) {
+        if (dialogState.value) {
             NormalDialog(
                 title = "아래 내용을 저장하시겠습니까?",
-                phrase = value,
+                phrase = value.value,
                 confirmText = "확인",
                 dismissText = "취소",
-                onConfirm = {
-                    navToResult(value)
-                },
-                onDismiss = {
-                    dialogState = false
-                }
+                onConfirm = { navToResult(value.value) },
+                onDismiss = { dialogState.value = false }
             )
         }
+        Timber.i("cameraUtil : ${cameraUtil.hashCode()}")
         Column(
             modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CameraPreView(
-                lifecycleOwner = lifecycleOwner,
+                lifecycleOwner = uiState.lifecycleOwner,
                 cameraUtil = cameraUtil
             )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(30.dp)
+                    .height(40.dp)
             )
-            CameraButton {
-                cameraUtil.takePicture()
-            }
+            CameraButton(
+                onClick = cameraUtil::takePicture
+            )
         }
-    }
-}
-
-@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
-@Composable
-private fun CameraPreView(
-    lifecycleOwner: LifecycleOwner,
-    cameraUtil: CameraUtil
-) {
-    AndroidView(
-        factory = {
-            cameraUtil.onBindScannerPreview(lifecycleOwner = lifecycleOwner)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(600.dp),
-    )
-}
-
-@Composable
-private fun CameraButton(
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .height(80.dp)
-            .width(80.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-    ) {
-        Icon(
-            imageVector = Icons.Default.Done,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
     }
 }
 
@@ -171,7 +100,6 @@ private fun CameraButton(
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
 private fun CameraPreview() {
-    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

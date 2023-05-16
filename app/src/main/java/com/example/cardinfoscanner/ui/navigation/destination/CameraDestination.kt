@@ -1,82 +1,79 @@
 package com.example.cardinfoscanner.ui.navigation.destination
 
 import android.os.Bundle
-import android.util.Log
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
-import com.example.cardinfoscanner.Destination.Companion.errorRout
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
-import com.example.cardinfoscanner.Destination.Companion.resultRout
-import com.example.cardinfoscanner.navigateClearTo
-import com.example.cardinfoscanner.navigateSingleTopTo
+import com.example.cardinfoscanner.MainViewModel
+import com.example.cardinfoscanner.navigateSingleTopToGraph
+import com.example.cardinfoscanner.stateholder.common.BaseUiState
+import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
-import com.example.cardinfoscanner.ui.error.ErrorScreen
 import com.example.cardinfoscanner.ui.permission.FeatureThatRequiresCameraPermission
-import com.example.cardinfoscanner.ui.result.ResultScreen
+import com.example.cardinfoscanner.util.CameraUtil
+import kotlinx.coroutines.launch
 
-
-object CameraDestination: Destination {
+@OptIn(ExperimentalComposeUiApi::class)
+object CameraDestination : Destination {
     override val route = cameraRoute
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _ ->
         navController.currentBackStackEntry?.let {
+            val snackBarHostState = remember { SnackbarHostState() }
+            val dialogState = remember { mutableStateOf(false) }
+            val uiState: BaseUiState = rememberUiState()
+            val value: MutableState<String> = remember{ mutableStateOf("") }
+            val cameraUtil = remember {
+                CameraUtil(uiState.context)
+                    .addSuccessCallBack {
+                        value.value = it
+                        dialogState.value = true
+                    }.addErrorCallBack {
+                        uiState.scope.launch {
+                            snackBarHostState.showSnackbar(it)
+                        }
+                    }
+            }
             CameraPreViewScreen(
+                cameraUtil = cameraUtil,
                 navToResult = { state ->
-                    Log.i("흥수", state)
-                    if(state.isNotEmpty()) {
+                    if (state.isNotEmpty()) {
                         val str = state.replace("/", "+")
-                        navController.navigateSingleTopTo("${ResultDestination.route}/$str")
+                        navController.navigateSingleTopToGraph("${NoteEditDestination.route}/$str")
                         return@CameraPreViewScreen
                     }
-                    navController.navigateSingleTopTo("${ErrorDestination.route}/result")
+                    uiState.scope.launch {
+                        snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
+                    }
                 },
-                navToPermission = { navController.navigateClearTo(permissionRoute) }
+                value = value,
+                navToPermission = { navController.navigateSingleTopToGraph(permissionRoute) },
+                dialogState = dialogState,
+                snackbarHostState = snackBarHostState,
+                onUpButtonClick = navController::navigateUp
             )
         }
     }
 }
 
-object PermissionDestination: Destination {
+object PermissionDestination : Destination {
     override val route = permissionRoute
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _->
         navController.currentBackStackEntry?.let {
-            FeatureThatRequiresCameraPermission(moveToNext = { navController.navigateClearTo(cameraRoute) })
+            FeatureThatRequiresCameraPermission(moveToNext = {
+                navController.navigateSingleTopToGraph(
+                    cameraRoute
+                )
+            })
         }
     }
 }
 
-object ResultDestination: Destination {
-    override val route = resultRout
-    private const val resultKey = "result"
-    val routeWithArgs = "$route/{$resultKey}"
-    val arguments = listOf(
-        navArgument(resultKey) { type = NavType.StringType }
-    )
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, bundle ->
-        navController.currentBackStackEntry?.let {
-            bundle?.getString(resultKey)?.let {
-                val str = it.replace("+", "/")
-                ResultScreen(text = str)
-            }
-        }
-    }
-}
 
-object ErrorDestination: Destination {
-    override val route = errorRout
-    private const val errorKey = "title"
-    val routeWithArgs = "$route/{$errorKey}"
-    val arguments = listOf(
-        navArgument(errorKey) { type = NavType.StringType }
-    )
-    override val screen: @Composable (NavHostController, Bundle?) -> Unit = { navController, bundle ->
-        navController.currentBackStackEntry?.let {
-            bundle?.getString(errorKey)?.let {
-                ErrorScreen(title = it)
-            }
-        }
-    }
-}
+

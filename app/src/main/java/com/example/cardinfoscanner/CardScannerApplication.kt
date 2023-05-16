@@ -2,6 +2,12 @@ package com.example.cardinfoscanner
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @HiltAndroidApp
-class CardScannerApplication: Application()
+class CardScannerApplication: Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Timber.plant(Timber.DebugTree())
+    }
+}

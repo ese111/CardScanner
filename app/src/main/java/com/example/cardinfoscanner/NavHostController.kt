@@ -1,20 +1,23 @@
 package com.example.cardinfoscanner
 
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 
-fun NavHostController.navigateSingleTopTo(route: String) =
+
+fun NavHostController.navigateSingleTopToGraph(route: String) =
     navigate(route) {
-        popUpTo(route) {
+        popUpTo(graph.findStartDestination().id) {
             saveState = true
         }
         launchSingleTop = true
         restoreState = true
     }
-fun NavHostController.navigateClearTo(route: String) =
+fun NavHostController.navigateSingleTopTo(route: String, isInclusive: Boolean = false) =
     navigate(route) {
         popUpTo(route) {
-            inclusive = true
+            saveState = true
+            inclusive = isInclusive
         }
         launchSingleTop = true
-        restoreState = true
+//        restoreState = true
     }
