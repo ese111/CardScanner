@@ -38,6 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.cardinfoscanner.R
+import com.example.cardinfoscanner.stateholder.common.TopBarDropMenuState
+import com.example.cardinfoscanner.stateholder.common.rememberDropMenuState
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +58,7 @@ fun BasicTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -90,7 +92,7 @@ fun MenuIconTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -130,19 +132,23 @@ fun DropMenuTopAppBar(
     backButtonVisible: Boolean = false,
     menuIcon: Painter = rememberVectorPainter(image = Icons.Filled.Menu),
     dropMenuItems: List<DropMenuState> = emptyList(),
-    onClickBackButton: () -> Unit = {}
+    onClickBackButton: () -> Unit = {},
+    dropMenuState: TopBarDropMenuState = rememberDropMenuState(),
+    openDropMenu: () -> Unit = {},
+    closeDropMenu: () -> Unit = {}
 ) {
-    var dropMenuState: Boolean by remember { mutableStateOf(false) }
-
+    Timber.i("dropMenuState.dropMenuState.value : ${dropMenuState.dropMenuState.value}")
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             DropdownMenu(
-                expanded = dropMenuState,
-                onDismissRequest = { dropMenuState = false },
+                expanded = dropMenuState.dropMenuState.value,
+                onDismissRequest = dropMenuState.closeDropMenu,
                 offset = DpOffset(x = 240.dp, y = 50.dp),
                 modifier = Modifier
             ) {
@@ -153,7 +159,7 @@ fun DropMenuTopAppBar(
                         },
                         onClick = {
                             it.onClick()
-                            dropMenuState = false
+                            dropMenuState.closeDropMenu()
                         }
                     )
                 }
@@ -169,13 +175,12 @@ fun DropMenuTopAppBar(
             navigationIcon = {
                 if (backButtonVisible) {
                     Row {
+                        Spacer(modifier = Modifier.width(10.dp))
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
                             modifier = Modifier
-                                .clickable {
-                                    onClickBackButton()
-                                }
+                                .clickable { onClickBackButton() }
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
@@ -187,9 +192,7 @@ fun DropMenuTopAppBar(
                         painter = menuIcon,
                         contentDescription = "Menu",
                         modifier = Modifier
-                            .clickable {
-                                dropMenuState = true
-                            }
+                            .clickable { dropMenuState.openDropMenu() }
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                 }
@@ -216,14 +219,12 @@ fun MenuTextTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
-                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
                         modifier = Modifier
-                            .clickable {
-                                onClickBackButton()
-                            }
+                            .clickable { onClickBackButton() }
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                 }
