@@ -57,6 +57,7 @@ object NoteEditDestination: Destination {
             val viewModel: NoteEditViewModel = hiltViewModel(it)
             bundle?.getString(resultKey)?.let { scanText ->
                 val content = scanText.replace("+", "/")
+                Timber.i("content : $content")
                 NoteEditScreen(
                     note = remember { mutableStateOf(Note(content = content)) },
                     setNote = viewModel::setNotesList,
