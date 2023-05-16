@@ -38,7 +38,8 @@ object NotesDestination: Destination {
                 noteListState = noteListState,
                 onClickMenuButton = { navController.navigateSingleTopTo(Destination.cameraRoute) },
                 onClickNote = { id -> navController.navigateSingleTopTo("${NoteDetailDestination.route}/$id") },
-                onCancelRemove = viewModel::cancelRemove
+                onCancelRemove = viewModel::cancelRemove,
+                onRemoveNote = viewModel::removeNote
             )
         }
     }
