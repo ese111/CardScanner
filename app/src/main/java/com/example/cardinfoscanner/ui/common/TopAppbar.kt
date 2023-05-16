@@ -56,6 +56,7 @@ fun BasicTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
+                    Spacer(modifier = Modifier.width(20.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -89,6 +90,7 @@ fun MenuIconTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
+                    Spacer(modifier = Modifier.width(20.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -214,6 +216,7 @@ fun MenuTextTopAppBar(
         navigationIcon = {
             if (backButtonVisible) {
                 Row {
+                    Spacer(modifier = Modifier.width(20.dp))
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
@@ -242,7 +245,7 @@ fun MenuTextTopAppBar(
 @Composable
 @Preview(showBackground = true)
 private fun TopAppBarPreview() {
-    BasicTopAppBar(title = "Note", backButtonVisible = false)
+    BasicTopAppBar(title = "Note", backButtonVisible = true)
 }
 
 @Composable
