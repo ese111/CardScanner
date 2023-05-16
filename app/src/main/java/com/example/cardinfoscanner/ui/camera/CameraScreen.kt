@@ -40,6 +40,7 @@ fun CameraPreViewScreen(
     onBottomSheetDismissRequest: () -> Unit = {},
     moveToCamera: () -> Unit = {}
 ) {
+    Timber.i("qusrud : !!! CameraPreViewScreen in ")
     if (!cameraPermissionState.permissionState.status.isGranted) {
         navToPermission()
     }

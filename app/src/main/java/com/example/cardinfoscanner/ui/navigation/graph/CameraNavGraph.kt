@@ -9,7 +9,6 @@ import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.ui.navigation.destination.CameraDestination
-import com.example.cardinfoscanner.ui.navigation.destination.PermissionDestination
 import com.example.cardinfoscanner.util.CameraUtil
 import javax.inject.Inject
 
@@ -20,9 +19,6 @@ fun NavGraphBuilder.cameraGraph(
 ) {
     composable(route = cameraRoute) {
         CameraDestination.screen(navController, it.arguments, mainViewModel)
-    }
-    composable(route = permissionRoute) {
-        PermissionDestination.screen(navController, it.arguments, mainViewModel)
     }
 }
 

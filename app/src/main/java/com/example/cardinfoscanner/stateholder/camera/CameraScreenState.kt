@@ -11,6 +11,7 @@ import com.example.cardinfoscanner.stateholder.permission.rememberPermissionScre
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Stable
 class CameraScreenState(
@@ -19,16 +20,21 @@ class CameraScreenState(
     val title: MutableState<String>,
     val snackBarHostState: SnackbarHostState,
     val dialogState: MutableState<Boolean>,
-    val showPermissionBottomSheetState: MutableState<Boolean>,
+    val showPermissionBottomSheetState: MutableState<Boolean>
 ) {
     val onSuccessScanText: (String) -> Unit = {
         value.value = it
         dialogState.value = true
+        Timber.i("qusrud : !!! CameraScreenState")
     }
     val onErrorScanText: (String) -> Unit = {
         uiState.scope.launch {
             snackBarHostState.showSnackbar(it)
         }
+    }
+    val onDismissBottomSheet = {
+        Timber.i("qusrud : !!! onDismissBottomSheet")
+        showPermissionBottomSheetState.value = false
     }
 }
 
@@ -40,7 +46,9 @@ fun rememberCameraScreenState(
     title: MutableState<String> = remember { mutableStateOf("") },
     snackBarHostState: SnackbarHostState = SnackbarHostState(),
     dialogState: MutableState<Boolean> = remember { mutableStateOf(false) },
-    showPermissionBottomSheetState: MutableState<Boolean> = remember { mutableStateOf(false) }
+    showPermissionBottomSheetState: MutableState<Boolean> = remember {
+        mutableStateOf(false)
+    }
 ): CameraScreenState = remember(
     uiState,
     value,

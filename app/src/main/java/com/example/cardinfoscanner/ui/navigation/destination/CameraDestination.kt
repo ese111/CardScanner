@@ -36,17 +36,18 @@ object CameraDestination : Destination {
                         }
                 }
                 Timber.i("state : ${state.hashCode()} ${cameraUtil.hashCode()}")
+                Timber.i("qusrud : !!! CameraPreViewScreen")
                 CameraPreViewScreen(
                     state = state,
                     cameraUtil = cameraUtil,
                     navToResult = { scanText ->
                         if (scanText.isNotEmpty()) {
                             val str = scanText.replace("/", "+")
-                            Timber.i("content CameraPreViewScreen : $str")
                             navController.navigateSingleTopToGraph("${NoteEditDestination.route}/$str")
                             return@CameraPreViewScreen
                         }
                         state.uiState.scope.launch {
+                            state.dialogState.value = false
                             state.snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
                         }
                     },
@@ -56,29 +57,13 @@ object CameraDestination : Destination {
                     onUpButtonClick = navController::navigateUp,
                     moveToCamera = {
                         navController.navigateSingleTopToGraph(cameraRoute)
-                    }
+                    },
+                    onBottomSheetDismissRequest = state.onDismissBottomSheet
                 )
             }
         }
 }
 
-object PermissionDestination : Destination {
-    override val route = permissionRoute
-    @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit =
-        { navController, _, _ ->
-            navController.currentBackStackEntry?.let {
-                CameraPermissionBottomSheet(
-                    state = rememberPermissionScreenState(),
-                    moveToNext = {
-                        navController.navigateSingleTopToGraph(
-                            cameraRoute
-                        )
-                    }
-                )
-            }
-        }
-}
 
 
 
