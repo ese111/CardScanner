@@ -13,5 +13,4 @@ fun SettingScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun SettingScreenPreview() {
-
 }

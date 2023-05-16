@@ -73,6 +73,7 @@ fun CameraPreViewScreen(
                 onDismiss = { state.dialogState.value = false }
             )
         }
+        Timber.i("cameraUtil : ${cameraUtil.hashCode()}")
         Column(
             modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,

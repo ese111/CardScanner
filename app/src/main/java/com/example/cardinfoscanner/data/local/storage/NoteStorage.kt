@@ -20,7 +20,11 @@ import javax.inject.Singleton
 class NoteStorage @Inject constructor(
     private val noteDataStore: NoteDataStore
 ) {
+<<<<<<< HEAD
     private var originListCache: Map<Long, Note> = emptyMap()
+=======
+    private var originListCache: Map<Long, Note> = emptyMap<Long, Note>()
+>>>>>>> 007c860429cf94bf10de53874a36a88fbfcbcf39
     private var lastIdCache: Long = -1
 
     val noteMap: StateFlow<Map<Long, Note>> = noteDataStore.
