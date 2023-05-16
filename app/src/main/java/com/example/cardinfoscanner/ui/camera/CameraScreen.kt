@@ -1,61 +1,60 @@
 package com.example.cardinfoscanner.ui.camera
 
-import android.Manifest
 import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.LifecycleOwner
+import com.example.cardinfoscanner.Destination
+import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.camera.CameraScreenState
-import com.example.cardinfoscanner.stateholder.common.BaseUiState
-import com.example.cardinfoscanner.stateholder.common.rememberUiState
+import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
+import com.example.cardinfoscanner.stateholder.permission.PermissionScreenState
+import com.example.cardinfoscanner.stateholder.permission.rememberPermissionScreenState
 import com.example.cardinfoscanner.ui.common.CardSnackBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
 import com.example.cardinfoscanner.ui.common.BasicTopAppBar
+import com.example.cardinfoscanner.ui.permission.CameraPermissionBottomSheet
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import timber.log.Timber
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CameraPreViewScreen(
-    dialogState: MutableState<Boolean>,
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
+    state: CameraScreenState = rememberCameraScreenState(),
+    cameraPermissionState: PermissionScreenState = rememberPermissionScreenState(),
     cameraUtil: CameraUtil,
-    navToResult: (String) -> Unit,
-    navToPermission: () -> Unit,
-    onUpButtonClick: () -> Unit,
-    uiState: BaseUiState = rememberUiState(),
-    value: MutableState<String> = remember{ mutableStateOf("") }
+    navToResult: (String) -> Unit = {},
+    navToPermission: () -> Unit = {},
+    onUpButtonClick: () -> Unit = {},
+    onBottomSheetDismissRequest: () -> Unit = {},
+    moveToCamera: () -> Unit = {}
 ) {
-    val cameraPermissionState = rememberPermissionState(
-        Manifest.permission.CAMERA
-    )
-    if (!cameraPermissionState.status.isGranted) {
+    Timber.i("qusrud : !!! CameraPreViewScreen in ")
+    if (!cameraPermissionState.permissionState.status.isGranted) {
         navToPermission()
     }
-
+    if (state.showPermissionBottomSheetState.value) {
+        CameraPermissionBottomSheet(
+            state = cameraPermissionState,
+            onDismissRequest = onBottomSheetDismissRequest,
+            moveToNext = moveToCamera
+        )
+    }
     Scaffold(
         snackbarHost = {
             SnackbarHost(
-                hostState = snackbarHostState
+                hostState = state.snackBarHostState
             ) {
                 CardSnackBar(snackbarData = it)
             }
@@ -64,14 +63,14 @@ fun CameraPreViewScreen(
             BasicTopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
         }
     ) { paddingValues ->
-        if (dialogState.value) {
+        if (state.dialogState.value) {
             NormalDialog(
                 title = "아래 내용을 저장하시겠습니까?",
-                phrase = value.value,
+                phrase = state.value.value,
                 confirmText = "확인",
                 dismissText = "취소",
-                onConfirm = { navToResult(value.value) },
-                onDismiss = { dialogState.value = false }
+                onConfirm = { navToResult(state.value.value) },
+                onDismiss = { state.dialogState.value = false }
             )
         }
         Timber.i("cameraUtil : ${cameraUtil.hashCode()}")
@@ -81,7 +80,7 @@ fun CameraPreViewScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CameraPreView(
-                lifecycleOwner = uiState.lifecycleOwner,
+                lifecycleOwner = state.uiState.lifecycleOwner,
                 cameraUtil = cameraUtil
             )
             Spacer(

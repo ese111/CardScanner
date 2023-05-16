@@ -20,7 +20,11 @@ import javax.inject.Singleton
 class NoteStorage @Inject constructor(
     private val noteDataStore: NoteDataStore
 ) {
+<<<<<<< HEAD
+    private var originListCache: Map<Long, Note> = emptyMap()
+=======
     private var originListCache: Map<Long, Note> = emptyMap<Long, Note>()
+>>>>>>> 007c860429cf94bf10de53874a36a88fbfcbcf39
     private var lastIdCache: Long = -1
 
     val noteMap: StateFlow<Map<Long, Note>> = noteDataStore.
@@ -68,7 +72,7 @@ class NoteStorage @Inject constructor(
         originListCache = noteMap.value
     }
 
-    suspend fun cancelRemove() = noteDataStore.setNoteList(Json.encodeToString(originListCache))
+    suspend fun cancelRemove() = noteDataStore.setNoteList(Json.encodeToString(originListCache.values.toList()))
 
     fun getNoteDetail(id: Long): NoteDetailUiState {
         val result = noteMap.value[id]

@@ -52,7 +52,7 @@ fun CardSnackBar(modifier: Modifier = Modifier, snackbarData: SnackbarData) {
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 fontSize = 15.sp,
-                color = Color.Black,
+                color = Color.White,
                 fontStyle = FontStyle.Normal)
         }
     }

@@ -46,7 +46,7 @@ class CameraUtil(
         return this
     }
     internal fun takePicture() {
-//        MediaActionSound().play(MediaActionSound.SHUTTER_CLICK) // 셔터 소리
+        MediaActionSound().play(MediaActionSound.SHUTTER_CLICK) // 셔터 소리
         val outputDirectory = context.getOutputDirectory()
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(outputDirectory).build()
         imageCapture.takePicture(outputFileOptions, executor,

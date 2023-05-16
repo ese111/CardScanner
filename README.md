@@ -12,8 +12,8 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 
 <p align="left">
 <img src="https://github.com/ese111/CardScanner/blob/dev/screen1.png" width="24%" height="24%">
-
 <img src="https://github.com/ese111/CardScanner/blob/dev/screen_list.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/dev/screen_permission.png" width="24%" height="24%">
 </p>                                                                                            
 
 ## Introduce
@@ -35,6 +35,21 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 * ML kit
 * MVVM
 
+<<<<<<< HEAD
+### 기술 설명
+* Android Application으로 AAC Activity 위에 Compose를 이용하여 UI를 구현 하였습니다.
+* State Holder 패턴을 이용하여 Compose의 State를 보관하고, AAC viewModel을 사용해서 비지니스 로직을 처리하도록 구현하였습니다.
+  * UI -> StateHolder -> ViewModel -> Repository -> Data Layer 흐름으로 아키텍처를 구성하였습니다.
+* State Hoisting을 사용하여 StateHolder를 내려서 상태를 내리고 람다로 이벤트를 전달하여 State를 변경하였습니다.
+* Hilt를 이용한 DI를 이용하였습니다.
+* jetpack Navigation을 이용해 Composable간의 인자 전달과 화면 이동을 구현하였습니다.
+* jetpack DataStore를 이용하여 local storage를 이용하였습니다.
+  * DataStore는 SharedPreferences의 단점을 보완하여 flow를 이용하여 비동기적으로 사용가능하고 에러핸들링이 가능합니다. UI Thread를 사용하지 않기때문 에 ANR을 예방이 가능합니다
+* ML kit의 OCR과 바코드 스캔 기능을 사용하여 텍스트 인식과 QR의 데이터를 받아 올수 있는 기능을 구현하였습니다.
+* Serialization을 이용해서 직렬화와 역직렬화를 구현하였습니다.
+* dateTime을 이용해서 날짜를 이용하였습니다.
+=======
+>>>>>>> 007c860429cf94bf10de53874a36a88fbfcbcf39
 
 ## Contact
 
