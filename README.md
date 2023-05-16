@@ -43,7 +43,7 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 * Hilt를 이용한 DI를 이용하였습니다.
 * jetpack Navigation을 이용해 Composable간의 인자 전달과 화면 이동을 구현하였습니다.
 * jetpack DataStore를 이용하여 local storage를 이용하였습니다.
-  * DataStore는 SharedPreferences의 단점을 보완하여 비동기적으로 flow를 이용하여 사용가능하고 에러핸들링이 가능합니다. UI Thread를 사용하지 않기때문 에 ANR을 예방이 가능합니다
+  * DataStore는 SharedPreferences의 단점을 보완하여 flow를 이용하여 비동기적으로 사용가능하고 에러핸들링이 가능합니다. UI Thread를 사용하지 않기때문 에 ANR을 예방이 가능합니다
 * ML kit의 OCR과 바코드 스캔 기능을 사용하여 텍스트 인식과 QR의 데이터를 받아 올수 있는 기능을 구현하였습니다.
 * Serialization을 이용해서 직렬화와 역직렬화를 구현하였습니다.
 * dateTime을 이용해서 날짜를 이용하였습니다.
