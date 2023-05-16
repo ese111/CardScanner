@@ -35,7 +35,6 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 * ML kit
 * MVVM
 
-<<<<<<< HEAD
 ### 기술 설명
 * Android Application으로 AAC Activity 위에 Compose를 이용하여 UI를 구현 하였습니다.
 * State Holder 패턴을 이용하여 Compose의 State를 보관하고, AAC viewModel을 사용해서 비지니스 로직을 처리하도록 구현하였습니다.
@@ -48,8 +47,6 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 * ML kit의 OCR과 바코드 스캔 기능을 사용하여 텍스트 인식과 QR의 데이터를 받아 올수 있는 기능을 구현하였습니다.
 * Serialization을 이용해서 직렬화와 역직렬화를 구현하였습니다.
 * dateTime을 이용해서 날짜를 이용하였습니다.
-=======
->>>>>>> 007c860429cf94bf10de53874a36a88fbfcbcf39
 
 ## Contact
 
