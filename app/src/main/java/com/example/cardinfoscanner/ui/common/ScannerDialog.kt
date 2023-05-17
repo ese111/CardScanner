@@ -13,18 +13,17 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun NormalDialog(
     modifier: Modifier = Modifier,
-    title: String,
-    phrase: String,
-    confirmText: String,
-    dismissText: String,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    title: String = "",
+    phrase: String = "",
+    confirmText: String = "",
+    dismissText: String = "",
+    onConfirm: () -> Unit = {},
+    onDismiss: () -> Unit = {},
+    onDismissRequest: () -> Unit = {}
 ) {
 
     AlertDialog(
-        onDismissRequest = {
-
-        },
+        onDismissRequest = onDismissRequest,
         title = { Text(text = title, fontSize = 20.sp) },
         text = { Text(text = phrase, fontSize = 16.sp, maxLines = 5, overflow = TextOverflow.Ellipsis) },
         modifier = modifier,
