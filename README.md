@@ -11,10 +11,10 @@
 Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigation + ML kit + CameraX
 
 <p align="left">
-<img src="https://github.com/ese111/CardScanner/blob/dev/camera_screen.png" width="24%" height="24%">
-<img src="https://github.com/ese111/CardScanner/blob/dev/screen1.png" width="24%" height="24%">
-<img src="https://github.com/ese111/CardScanner/blob/dev/screen_permission.png" width="24%" height="24%">
-<img src="https://github.com/ese111/CardScanner/blob/dev/edit.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/main/camera_screen.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/main/screen1.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/main/screen_permission.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/main/edit.png" width="24%" height="24%">
 </p>                                                                                            
 
 ## Introduce
