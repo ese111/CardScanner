@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import com.example.cardinfoscanner.stateholder.app.rememberAppState
 import com.example.cardinfoscanner.ui.main.CardScannerApp
 import com.example.cardinfoscanner.ui.theme.CardInfoScannerTheme
 import com.example.cardinfoscanner.util.CameraUtil
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CardScannerApp(rememberAppState())
+                    CardScannerApp(
+                        appState = rememberAppState()
+                    )
                 }
             }
         }

@@ -3,5 +3,7 @@
     <string name="bottom_navigation_note_list_title">List</string>
     <string name="bottom_navigation_scan_title">Scan</string>
     <string name="bottom_navigation_settings_title">Setting</string>
-
+    <string name="oss_title">오픈 소스 라이센스</string>
+    <string name="setting_page_setting_text">설정</string>
+    <string name="setting_page_info_text">정보</string>
 </resources>
