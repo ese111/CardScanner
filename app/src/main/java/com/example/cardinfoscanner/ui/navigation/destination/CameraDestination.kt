@@ -18,10 +18,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
 import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
 import com.example.cardinfoscanner.util.CameraUtil
+import com.google.accompanist.permissions.isGranted
 import timber.log.Timber
 
 object CameraDestination : Destination {
     override val route = cameraRoute
+    @OptIn(ExperimentalPermissionsApi::class)
     override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit =
         { navController, _, _ ->
             navController.currentBackStackEntry?.let {
@@ -29,14 +31,11 @@ object CameraDestination : Destination {
                 val cameraUtil = remember {
                     CameraUtil(state.uiState.context)
                         .addSuccessCallBack { str ->
-                            Timber.i("state : $str}")
                             state.onSuccessScanText(str)
                         }.addErrorCallBack { str ->
                             state.onErrorScanText(str)
                         }
                 }
-                Timber.i("state : ${state.hashCode()} ${cameraUtil.hashCode()}")
-                Timber.i("qusrud : !!! CameraPreViewScreen")
                 CameraPreViewScreen(
                     state = state,
                     cameraUtil = cameraUtil,
@@ -51,14 +50,17 @@ object CameraDestination : Destination {
                             state.snackBarHostState.showSnackbar("인식된 정보가 없습니다.")
                         }
                     },
-                    navToPermission = {
-                        state.showPermissionBottomSheetState.value = true
-                    },
                     onUpButtonClick = navController::navigateUp,
                     moveToCamera = {
                         navController.navigateSingleTopToGraph(cameraRoute)
                     },
-                    onBottomSheetDismissRequest = state.onDismissBottomSheet
+                    onBottomSheetDismissRequest = {
+                        if(state.cameraPermissionState.permissionState.status.isGranted) {
+                            state.onDismissBottomSheet()
+                        } else {
+                            navController.navigateUp()
+                        }
+                    }
                 )
             }
         }

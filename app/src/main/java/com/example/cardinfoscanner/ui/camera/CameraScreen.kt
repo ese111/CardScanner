@@ -32,23 +32,28 @@ import timber.log.Timber
 @Composable
 fun CameraPreViewScreen(
     state: CameraScreenState = rememberCameraScreenState(),
-    cameraPermissionState: PermissionScreenState = rememberPermissionScreenState(),
     cameraUtil: CameraUtil,
     navToResult: (String) -> Unit = {},
-    navToPermission: () -> Unit = {},
     onUpButtonClick: () -> Unit = {},
     onBottomSheetDismissRequest: () -> Unit = {},
     moveToCamera: () -> Unit = {}
 ) {
-    Timber.i("qusrud : !!! CameraPreViewScreen in ")
-    if (!cameraPermissionState.permissionState.status.isGranted) {
-        navToPermission()
-    }
+
     if (state.showPermissionBottomSheetState.value) {
         CameraPermissionBottomSheet(
-            state = cameraPermissionState,
+            state = state.cameraPermissionState,
             onDismissRequest = onBottomSheetDismissRequest,
             moveToNext = moveToCamera
+        )
+    }
+    if (state.dialogState.value) {
+        NormalDialog(
+            title = "아래 내용을 저장하시겠습니까?",
+            phrase = state.value.value,
+            confirmText = "확인",
+            dismissText = "취소",
+            onConfirm = { navToResult(state.value.value) },
+            onDismiss = { state.dialogState.value = false }
         )
     }
     Scaffold(
@@ -63,17 +68,6 @@ fun CameraPreViewScreen(
             BasicTopAppBar(title = "Card Scanner", backButtonVisible = true, onClickBackButton = onUpButtonClick)
         }
     ) { paddingValues ->
-        if (state.dialogState.value) {
-            NormalDialog(
-                title = "아래 내용을 저장하시겠습니까?",
-                phrase = state.value.value,
-                confirmText = "확인",
-                dismissText = "취소",
-                onConfirm = { navToResult(state.value.value) },
-                onDismiss = { state.dialogState.value = false }
-            )
-        }
-        Timber.i("cameraUtil : ${cameraUtil.hashCode()}")
         Column(
             modifier = Modifier.padding(paddingValues),
             verticalArrangement = Arrangement.Center,

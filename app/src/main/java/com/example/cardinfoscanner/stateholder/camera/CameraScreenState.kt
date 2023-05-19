@@ -10,6 +10,7 @@ import com.example.cardinfoscanner.stateholder.permission.PermissionScreenState
 import com.example.cardinfoscanner.stateholder.permission.rememberPermissionScreenState
 import com.example.cardinfoscanner.util.CameraUtil
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -20,25 +21,29 @@ class CameraScreenState(
     val title: MutableState<String>,
     val snackBarHostState: SnackbarHostState,
     val dialogState: MutableState<Boolean>,
-    val showPermissionBottomSheetState: MutableState<Boolean>
+    val cameraPermissionState: PermissionScreenState
 ) {
     val onSuccessScanText: (String) -> Unit = {
         value.value = it
         dialogState.value = true
-        Timber.i("qusrud : !!! CameraScreenState")
     }
     val onErrorScanText: (String) -> Unit = {
         uiState.scope.launch {
             snackBarHostState.showSnackbar(it)
         }
     }
+    @OptIn(ExperimentalPermissionsApi::class)
+    val showPermissionBottomSheetState = mutableStateOf(!cameraPermissionState.permissionState.status.isGranted)
+
     val onDismissBottomSheet = {
-        Timber.i("qusrud : !!! onDismissBottomSheet")
         showPermissionBottomSheetState.value = false
     }
+
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalPermissionsApi::class
+)
 @Composable
 fun rememberCameraScreenState(
     uiState: BaseUiState = rememberUiState(),
@@ -46,16 +51,14 @@ fun rememberCameraScreenState(
     title: MutableState<String> = remember { mutableStateOf("") },
     snackBarHostState: SnackbarHostState = SnackbarHostState(),
     dialogState: MutableState<Boolean> = remember { mutableStateOf(false) },
-    showPermissionBottomSheetState: MutableState<Boolean> = remember {
-        mutableStateOf(false)
-    }
+    cameraPermissionState: PermissionScreenState = rememberPermissionScreenState(),
 ): CameraScreenState = remember(
     uiState,
     value,
     title,
     snackBarHostState,
     dialogState,
-    showPermissionBottomSheetState
+    cameraPermissionState
 ) {
     CameraScreenState(
         uiState = uiState,
@@ -63,6 +66,6 @@ fun rememberCameraScreenState(
         title = title,
         snackBarHostState = snackBarHostState,
         dialogState = dialogState,
-        showPermissionBottomSheetState = showPermissionBottomSheetState
+        cameraPermissionState = cameraPermissionState
     )
 }
