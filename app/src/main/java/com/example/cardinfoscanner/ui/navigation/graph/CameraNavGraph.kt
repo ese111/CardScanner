@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.MainViewModel
+import com.example.cardinfoscanner.stateholder.app.AppState
 import com.example.cardinfoscanner.ui.navigation.destination.CameraDestination
 import com.example.cardinfoscanner.util.CameraUtil
 import javax.inject.Inject
@@ -15,10 +16,10 @@ import javax.inject.Inject
 @Stable
 fun NavGraphBuilder.cameraGraph(
     navController: NavHostController,
-    mainViewModel: MainViewModel
+    appState: AppState
 ) {
     composable(route = cameraRoute) {
-        CameraDestination.screen(navController, it.arguments, mainViewModel)
+        CameraDestination.screen(navController, it.arguments, appState)
     }
 }
 

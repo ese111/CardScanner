@@ -10,12 +10,13 @@ import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.R
+import com.example.cardinfoscanner.stateholder.app.AppState
 import com.example.cardinfoscanner.stateholder.setting.rememberSettingState
 import com.example.cardinfoscanner.ui.setting.SettingScreen
 
 object SettingDestination: Destination {
     override val route = Destination.settingRout
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, AppState?) -> Unit = { navController, _, _ ->
         navController.currentBackStackEntry?.let {
             val state = rememberSettingState()
             SettingScreen(

@@ -84,7 +84,7 @@ fun NoteDetailScreen(
             DropMenuTopAppBar(
                 title = "NoteDetail",
                 backButtonVisible = true,
-                menuIcon = rememberVectorPainter(Icons.Default.Menu),
+                menuIcon = Icons.Default.Menu,
                 onClickBackButton = onClickUpButton,
                 dropMenuItems = listOf(
                     DropMenuState(

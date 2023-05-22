@@ -12,11 +12,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
-import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.data.local.model.Note
 import com.example.cardinfoscanner.navigateSingleTopTo
+import com.example.cardinfoscanner.stateholder.app.AppState
+import com.example.cardinfoscanner.stateholder.common.rememberTextFieldState
 import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.stateholder.note.detail.rememberNoteDetailState
+import com.example.cardinfoscanner.stateholder.note.edit.rememberNoteEditState
 import com.example.cardinfoscanner.stateholder.viewmodel.NoteDetailViewModel
 import com.example.cardinfoscanner.stateholder.viewmodel.NoteEditViewModel
 import com.example.cardinfoscanner.stateholder.viewmodel.NoteListViewModel
@@ -28,7 +30,7 @@ import timber.log.Timber
 object NotesDestination: Destination {
     override val route = Destination.noteListRout
     @OptIn(ExperimentalComposeUiApi::class)
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, _, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, AppState?) -> Unit = { navController, _, _ ->
         navController.currentBackStackEntry?.let {
             val viewModel: NoteListViewModel = hiltViewModel(it)
             val noteListState = viewModel.noteList.collectAsStateWithLifecycle(initialValue = emptyList())
@@ -36,7 +38,8 @@ object NotesDestination: Destination {
             NoteListScreen(
                 uiState = rememberUiState(),
                 noteListState = noteListState,
-                onClickMenuButton = { navController.navigateSingleTopTo(Destination.cameraRoute) },
+                moveToCamera = { navController.navigateSingleTopTo(Destination.cameraRoute) },
+                moveToEdit = {},
                 onClickNote = { id -> navController.navigateSingleTopTo("${NoteDetailDestination.route}/$id") },
                 onCancelRemove = viewModel::cancelRemove,
                 onRemoveNote = viewModel::removeNote
@@ -52,19 +55,30 @@ object NoteEditDestination: Destination {
     val arguments = listOf(
         navArgument(resultKey) { type = NavType.StringType }
     )
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, bundle, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, AppState?) -> Unit = { navController, bundle, _ ->
         navController.currentBackStackEntry?.let {
             val viewModel: NoteEditViewModel = hiltViewModel(it)
             bundle?.getString(resultKey)?.let { scanText ->
-                val content = scanText.replace("+", "/")
-                Timber.i("content : $content")
+                val noteEditState = rememberNoteEditState(
+                    navHostController = navController,
+                    save = viewModel::setNotesList,
+                    contentTextFieldState = rememberTextFieldState(
+                        value = mutableStateOf(scanText.replace("+", "/"))
+                    )
+                )
+
                 NoteEditScreen(
-                    note = remember { mutableStateOf(Note(content = content)) },
-                    setNote = viewModel::setNotesList,
-                    onClickSave = {
-                        navController.navigateSingleTopTo(NotesDestination.route)
-                    },
-                    onClickCancel = { navController.navigateUp() }
+                    noteState = noteEditState,
+                    onClickSave = noteEditState.onSaveNote,
+                    onClickCancel = navController::navigateUp,
+                    onTitleChange = noteEditState.titleTextFieldState.onTextChange,
+                    onContentChange = noteEditState.contentTextFieldState.onTextChange,
+                    onTitleFocusChanged = noteEditState.titleTextFieldState.onChangeFocus,
+                    onContentFocusChanged = noteEditState.contentTextFieldState.onChangeFocus,
+                    showSaveDialogState = noteEditState.showSaveDialog,
+                    showCancelDialogState = noteEditState.showCancelDialog,
+                    onDismissSaveDialog = noteEditState.onDismissSaveDialog,
+                    onDismissCancelDialog = noteEditState.onDismissCancelDialog
                 )
             }
         }
@@ -78,34 +92,27 @@ object NoteDetailDestination: Destination {
     val arguments = listOf(
         navArgument(resultKey) { type = NavType.LongType }
     )
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit = { navController, bundle, _ ->
+    override val screen: @Composable (NavHostController, Bundle?, AppState?) -> Unit = { navController, bundle, _ ->
         navController.currentBackStackEntry?.let {
-            val viewModel: NoteDetailViewModel = hiltViewModel(it)
-            val note by viewModel.noteState.collectAsStateWithLifecycle()
-            val noteState = rememberNoteDetailState(
-                noteDetailUiState = note
-            )
             bundle?.getLong(resultKey)?.let { id ->
-                viewModel.getNoteDetail(id)
+                val viewModel: NoteDetailViewModel = hiltViewModel(it)
+                val noteState = rememberNoteDetailState(
+                    noteDetailUiState = viewModel.getNoteDetail(id),
+                    saveNote = viewModel::saveNote,
+                    removeNote = viewModel::removeNote
+                )
+
                 NoteDetailScreen(
                     noteState = noteState,
-                    removeNote = { note ->
-                        noteState.removeDialogState.value = false
-                        viewModel.removeNote(note)
-                        navController.navigateUp()
-                    },
-                    saveNote = { note ->
-                        noteState.saveDialogState.value = false
-                        viewModel.saveNote(note)
-                        navController.navigateUp()
-                    },
+                    removeNote = noteState.removeNote,
+                    saveNote = noteState.saveNote,
                     onClickUpButton = navController::navigateUp,
-                    onDismissRemoveDialog = { noteState.removeDialogState.value = false },
-                    onDismissSaveDialog = { noteState.saveDialogState.value = false },
-                    showRemoveDialog = { noteState.removeDialogState.value = true },
-                    showSaveDialog = { noteState.saveDialogState.value = true },
-                    onContentFocusChanged = { isFocus -> noteState.contentFieldState.isFocus.value = isFocus },
-                    onTitleFocusChanged = { isFocus -> noteState.titleFieldState.isFocus.value = isFocus },
+                    onDismissRemoveDialog = noteState.onDismissRemoveDialog,
+                    onDismissSaveDialog = noteState.onDismissSaveDialog,
+                    showRemoveDialog = noteState.showRemoveDialog,
+                    showSaveDialog = noteState.showSaveDialog,
+                    onContentFocusChanged = noteState.onContentFocusChanged,
+                    onTitleFocusChanged = noteState.onTitleFocusChanged,
                     onContentChange = noteState.onContentChange,
                     onTitleChange = noteState.onTitleChanged
                 )

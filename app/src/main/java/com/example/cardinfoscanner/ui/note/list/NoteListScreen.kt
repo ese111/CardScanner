@@ -12,11 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,7 +44,8 @@ import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.stateholder.common.BaseUiState
 import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.data.local.model.Note
-import com.example.cardinfoscanner.ui.common.MenuIconTopAppBar
+import com.example.cardinfoscanner.ui.common.DropMenuState
+import com.example.cardinfoscanner.ui.common.DropMenuTopAppBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -54,7 +53,8 @@ import kotlinx.coroutines.launch
 fun NoteListScreen(
     uiState: BaseUiState = rememberUiState(),
     noteListState: State<List<Note>> = remember { mutableStateOf(emptyList()) },
-    onClickMenuButton: () -> Unit = {},
+    moveToCamera: () -> Unit = {},
+    moveToEdit: () -> Unit = {},
     onClickNote: (Long) -> Unit = {},
     onRemoveNote: (Note) -> Unit = {},
     onCancelRemove: () -> Unit = {}
@@ -63,10 +63,19 @@ fun NoteListScreen(
 
     Scaffold(
         topBar = {
-            MenuIconTopAppBar(
+            DropMenuTopAppBar(
                 title = "Note",
-                menuIcon = painterResource(R.drawable.ic_camera),
-                onClickMenuButton = onClickMenuButton
+                menuIcon = Icons.Filled.Add,
+                dropMenuItems = listOf(
+                    DropMenuState(
+                        name = "직접 작성하기",
+                        onClick = moveToEdit
+                    ),
+                    DropMenuState(
+                        name = "사진으로 추가하기",
+                        onClick = moveToCamera
+                    )
+                )
             )
         },
         snackbarHost = {
@@ -90,7 +99,7 @@ fun NoteListScreen(
         if(noteListState.value.isEmpty()) {
             EmptyNoteItem(
                 Modifier.padding(paddingValues = paddingValues),
-                onClick = onClickMenuButton
+                onClick = moveToCamera
             )
             return@Scaffold
         }

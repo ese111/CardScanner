@@ -76,7 +76,7 @@ fun CardScannerApp(
         ScannerNavHost(
             modifier = Modifier.padding(paddingValues = paddingValues),
             navController = appState.navHostController,
-            mainViewModel = mainViewModel
+            appState = appState
         )
     }
 

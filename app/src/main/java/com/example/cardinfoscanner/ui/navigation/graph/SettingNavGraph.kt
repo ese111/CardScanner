@@ -7,14 +7,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.MainViewModel
+import com.example.cardinfoscanner.stateholder.app.AppState
 import com.example.cardinfoscanner.ui.navigation.destination.SettingDestination
 
 @Stable
 fun NavGraphBuilder.settingGraph(
     navController: NavHostController,
-    mainViewModel: MainViewModel
+    appState: AppState
 ) {
     composable(route = Destination.settingRout) {
-        SettingDestination.screen(navController, it.arguments, mainViewModel)
+        SettingDestination.screen(navController, it.arguments, appState)
     }
 }

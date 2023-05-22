@@ -6,15 +6,24 @@ import com.example.cardinfoscanner.data.local.repository.LocalNoteRepository
 import com.example.cardinfoscanner.data.local.model.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class NoteEditViewModel @Inject constructor(
     private val noteRepository: LocalNoteRepository
-): ViewModel() {
+) : ViewModel() {
 
-    fun setNotesList(note: Note) = viewModelScope.launch {
-        noteRepository.setNoteList(note)
+    fun setNotesList(title: String, content: String) = viewModelScope.launch {
+        noteRepository.setNoteList(
+            Note(
+                title = title,
+                content = content,
+                date = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date}"
+            )
+        )
     }
 
     fun getNote(id: Long) = noteRepository.getNoteDetail(id)

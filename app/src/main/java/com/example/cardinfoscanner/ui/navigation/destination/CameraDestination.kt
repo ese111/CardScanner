@@ -11,6 +11,7 @@ import com.example.cardinfoscanner.Destination.Companion.cameraRoute
 import com.example.cardinfoscanner.Destination.Companion.permissionRoute
 import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.navigateSingleTopToGraph
+import com.example.cardinfoscanner.stateholder.app.AppState
 import com.example.cardinfoscanner.stateholder.permission.rememberPermissionScreenState
 import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
 import com.example.cardinfoscanner.ui.permission.CameraPermissionBottomSheet
@@ -24,7 +25,7 @@ import timber.log.Timber
 object CameraDestination : Destination {
     override val route = cameraRoute
     @OptIn(ExperimentalPermissionsApi::class)
-    override val screen: @Composable (NavHostController, Bundle?, MainViewModel?) -> Unit =
+    override val screen: @Composable (NavHostController, Bundle?, AppState?) -> Unit =
         { navController, _, _ ->
             navController.currentBackStackEntry?.let {
                 val state = rememberCameraScreenState()

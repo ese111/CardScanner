@@ -10,7 +10,17 @@ import androidx.compose.runtime.remember
 class TextFieldState(
     val value: MutableState<String>,
     val isFocus: MutableState<Boolean>
-)
+) {
+    val onChangeFocus: (Boolean) -> Unit = { hasFocus ->
+        isFocus.value = hasFocus
+    }
+    val onTextChange: (String) -> Unit = { str ->
+        value.value = str
+    }
+    val initValue: (String) -> Unit = { str ->
+        value.value = str
+    }
+}
 
 @Composable
 fun rememberTextFieldState(

@@ -15,10 +15,7 @@ import javax.inject.Inject
 class NoteDetailViewModel @Inject constructor(
     private val noteRepository: LocalNoteRepository
 ): ViewModel() {
-    private val _noteState: MutableStateFlow<NoteDetailUiState> = MutableStateFlow(NoteDetailUiState.Loading)
-    val noteState = _noteState.asStateFlow()
-    fun getNoteDetail(id: Long) { _noteState.value = noteRepository.getNoteDetail(id) }
-
+    fun getNoteDetail(id: Long) = noteRepository.getNoteDetail(id)
     fun removeNote(note: Note) = viewModelScope.launch { noteRepository.removeNote(note) }
     fun saveNote(note: Note) = viewModelScope.launch { noteRepository.saveNote(note) }
 }

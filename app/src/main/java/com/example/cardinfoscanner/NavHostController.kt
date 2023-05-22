@@ -19,5 +19,4 @@ fun NavHostController.navigateSingleTopTo(route: String, isInclusive: Boolean = 
             inclusive = isInclusive
         }
         launchSingleTop = true
-//        restoreState = true
     }
