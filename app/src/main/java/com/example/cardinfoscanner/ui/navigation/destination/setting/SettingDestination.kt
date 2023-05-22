@@ -1,15 +1,9 @@
-package com.example.cardinfoscanner.ui.navigation.destination
+package com.example.cardinfoscanner.ui.navigation.destination.setting
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.cardinfoscanner.Destination
-import com.example.cardinfoscanner.MainViewModel
-import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.stateholder.app.AppState
 import com.example.cardinfoscanner.stateholder.setting.rememberSettingState
 import com.example.cardinfoscanner.ui.setting.SettingScreen

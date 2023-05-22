@@ -26,6 +26,4 @@ class NoteEditViewModel @Inject constructor(
         )
     }
 
-    fun getNote(id: Long) = noteRepository.getNoteDetail(id)
-
 }

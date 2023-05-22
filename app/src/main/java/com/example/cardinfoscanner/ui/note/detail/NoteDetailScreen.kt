@@ -27,11 +27,11 @@ import com.example.cardinfoscanner.stateholder.note.detail.rememberNoteDetailSta
 import com.example.cardinfoscanner.ui.common.DropMenuState
 import com.example.cardinfoscanner.ui.common.DropMenuTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
+import com.example.cardinfoscanner.ui.note.edit.NoteEditorView
 import kotlinx.coroutines.launch
 
 sealed interface NoteDetailUiState {
     object Loading : NoteDetailUiState
-
     data class Success(val data: Note) : NoteDetailUiState
 }
 @OptIn(ExperimentalComposeUiApi::class)
@@ -39,12 +39,10 @@ sealed interface NoteDetailUiState {
 fun NoteDetailScreen(
     uiState: BaseUiState = rememberUiState(),
     noteState: NoteDetailState = rememberNoteDetailState(),
-    removeNote:(Note) -> Unit = {},
-    saveNote:(Note) -> Unit = {},
-    onDismissRemoveDialog: () -> Unit = {},
-    onDismissSaveDialog: () -> Unit = {},
-    showRemoveDialog: () -> Unit = {},
-    showSaveDialog: () -> Unit = {},
+    removeNote:() -> Unit = {},
+    saveNote:() -> Unit = {},
+    isShowRemoveDialog: (Boolean) -> Unit = {},
+    isShowSaveDialog: (Boolean) -> Unit = {},
     onClickUpButton: () -> Unit = {},
     onTitleChange: (String) -> Unit = {},
     onContentChange: (String) -> Unit = {},
@@ -64,8 +62,8 @@ fun NoteDetailScreen(
             phrase = "변경된 데이터는 복구되지 않습니다.",
             confirmText = "확인",
             dismissText = "취소",
-            onConfirm = { saveNote(noteState.note.value) },
-            onDismiss = onDismissSaveDialog
+            onConfirm = saveNote,
+            onDismiss = { isShowSaveDialog(false) }
         )
     }
     if(noteState.removeDialogState.value) {
@@ -74,8 +72,8 @@ fun NoteDetailScreen(
             phrase = "삭제된 데이터는 복구되지 않습니다.",
             confirmText = "확인",
             dismissText = "취소",
-            onConfirm = { removeNote(noteState.note.value) },
-            onDismiss = onDismissRemoveDialog
+            onConfirm = removeNote,
+            onDismiss = { isShowRemoveDialog(false) }
         )
     }
 
@@ -89,11 +87,11 @@ fun NoteDetailScreen(
                 dropMenuItems = listOf(
                     DropMenuState(
                         name = "저장하기",
-                        onClick = showSaveDialog
+                        onClick = { isShowSaveDialog(true) }
                     ),
                     DropMenuState(
                         name = "삭제하기",
-                        onClick = showRemoveDialog
+                        onClick = { isShowRemoveDialog(true) }
                     )
                 )
             )
@@ -101,66 +99,12 @@ fun NoteDetailScreen(
     ) { paddingValues ->
         NoteEditorView(
             modifier = Modifier.padding(paddingValues),
-            title = noteState.note.value.title,
-            content = noteState.note.value.content,
+            title = noteState.titleFieldState.value.value,
+            content = noteState.contentFieldState.value.value,
             onTitleChange = onTitleChange,
             onContentChange = onContentChange,
             onTitleFocusChanged = onTitleFocusChanged,
             onContentFocusChanged = onContentFocusChanged
-        )
-    }
-}
-
-@Composable
-fun NoteEditorView(
-    modifier: Modifier = Modifier,
-    title: String = "",
-    content: String = "",
-    onTitleFocusChanged: (Boolean) -> Unit = {},
-    onTitleChange: (String) -> Unit = {},
-    onContentChange: (String) -> Unit = {},
-    onContentFocusChanged: (Boolean) -> Unit = {}
-) {
-    Column(
-        modifier = modifier
-            .padding(20.dp)
-    ) {
-        TextField(
-            value = title,
-            onValueChange = onTitleChange,
-            placeholder = {
-                Text(text = "제목 없음")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { state -> onTitleFocusChanged(state.hasFocus) },
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent
-            )
-        )
-
-        TextField(
-            value = content,
-            onValueChange = onContentChange,
-            placeholder = {
-                Text(text = "내용 없음")
-            },
-            modifier = Modifier
-                .fillMaxSize()
-                .onFocusChanged { state -> onContentFocusChanged(state.hasFocus) },
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
         )
     }
 }

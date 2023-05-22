@@ -1,26 +1,20 @@
-package com.example.cardinfoscanner.ui.navigation.destination
+package com.example.cardinfoscanner.ui.navigation.destination.camera
 
 import android.os.Bundle
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import com.example.cardinfoscanner.Destination
 import com.example.cardinfoscanner.Destination.Companion.cameraRoute
-import com.example.cardinfoscanner.Destination.Companion.permissionRoute
-import com.example.cardinfoscanner.MainViewModel
 import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.app.AppState
-import com.example.cardinfoscanner.stateholder.permission.rememberPermissionScreenState
-import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
-import com.example.cardinfoscanner.ui.permission.CameraPermissionBottomSheet
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import kotlinx.coroutines.launch
 import com.example.cardinfoscanner.stateholder.camera.rememberCameraScreenState
+import com.example.cardinfoscanner.ui.camera.CameraPreViewScreen
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteEditDestination
 import com.example.cardinfoscanner.util.CameraUtil
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 object CameraDestination : Destination {
     override val route = cameraRoute

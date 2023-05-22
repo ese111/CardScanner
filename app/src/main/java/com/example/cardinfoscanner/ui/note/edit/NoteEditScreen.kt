@@ -1,21 +1,17 @@
 package com.example.cardinfoscanner.ui.note.edit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cardinfoscanner.stateholder.common.DialogState
 import com.example.cardinfoscanner.stateholder.note.edit.NoteEditState
 import com.example.cardinfoscanner.stateholder.note.edit.rememberNoteEditState
 import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
-import com.example.cardinfoscanner.ui.note.detail.NoteEditorView
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -32,6 +28,12 @@ fun NoteEditScreen(
     onDismissSaveDialog: () -> Unit = {},
     onDismissCancelDialog: () -> Unit = {}
 ) {
+    BackHandler(enabled = noteState.isVisible.value) {
+        noteState.uiState.scope.launch {
+            noteState.uiState.focusManager.clearFocus()
+        }
+    }
+
     if(noteState.cancelDialogState.dialogState.value) {
         NormalDialog(
             title = "저장하지 않습니다.",

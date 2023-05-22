@@ -2,22 +2,19 @@ package com.example.cardinfoscanner.stateholder.note.edit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.cardinfoscanner.data.local.model.Note
-import com.example.cardinfoscanner.navigateSingleTopTo
+import com.example.cardinfoscanner.navigateSingleTopToGraph
 import com.example.cardinfoscanner.stateholder.common.BaseUiState
 import com.example.cardinfoscanner.stateholder.common.DialogState
 import com.example.cardinfoscanner.stateholder.common.TextFieldState
 import com.example.cardinfoscanner.stateholder.common.rememberDialogState
 import com.example.cardinfoscanner.stateholder.common.rememberTextFieldState
 import com.example.cardinfoscanner.stateholder.common.rememberUiState
-import com.example.cardinfoscanner.ui.navigation.destination.NotesDestination
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteListDestination
 import timber.log.Timber
 
 @Stable
@@ -30,11 +27,12 @@ class NoteEditState(
     val contentTextFieldState: TextFieldState,
     save: (String, String) -> Unit
 ) {
+    val isVisible = mutableStateOf(titleTextFieldState.isFocus.value||contentTextFieldState.isFocus.value)
     val onSaveNote: () -> Unit = {
         saveDialogState.onChangeDialogState(false)
         Timber.i("Test : ${titleTextFieldState.value.value}, ${contentTextFieldState.value.value}")
         save(titleTextFieldState.value.value, contentTextFieldState.value.value)
-        navHostController.navigateSingleTopTo(NotesDestination.route)
+        navHostController.navigateSingleTopToGraph(NoteListDestination.route)
     }
     val showSaveDialog = { saveDialogState.onChangeDialogState(true) }
     val showCancelDialog = { cancelDialogState.onChangeDialogState(true) }

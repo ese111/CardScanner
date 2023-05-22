@@ -17,15 +17,12 @@ class TextFieldState(
     val onTextChange: (String) -> Unit = { str ->
         value.value = str
     }
-    val initValue: (String) -> Unit = { str ->
-        value.value = str
-    }
 }
 
 @Composable
 fun rememberTextFieldState(
-    value: MutableState<String> = mutableStateOf(""),
-    isFocus: MutableState<Boolean> = mutableStateOf(false)
+    value: MutableState<String> = remember { mutableStateOf("") },
+    isFocus: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) = remember(value, isFocus) {
     TextFieldState(
         value = value,

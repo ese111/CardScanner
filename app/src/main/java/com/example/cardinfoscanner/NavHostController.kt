@@ -12,11 +12,3 @@ fun NavHostController.navigateSingleTopToGraph(route: String) =
         launchSingleTop = true
         restoreState = true
     }
-fun NavHostController.navigateSingleTopTo(route: String, isInclusive: Boolean = false) =
-    navigate(route) {
-        popUpTo(route) {
-            saveState = false
-            inclusive = isInclusive
-        }
-        launchSingleTop = true
-    }
