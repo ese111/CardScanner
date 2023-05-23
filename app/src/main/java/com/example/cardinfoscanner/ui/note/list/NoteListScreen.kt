@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -24,6 +25,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,10 +42,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.cardinfoscanner.R
 import com.example.cardinfoscanner.stateholder.common.BaseUiState
 import com.example.cardinfoscanner.stateholder.common.rememberUiState
 import com.example.cardinfoscanner.data.local.model.Note
+import com.example.cardinfoscanner.stateholder.note.list.NoteListState
+import com.example.cardinfoscanner.stateholder.note.list.rememberNoteListState
 import com.example.cardinfoscanner.ui.common.DropMenuState
 import com.example.cardinfoscanner.ui.common.DropMenuTopAppBar
 import kotlinx.coroutines.launch
@@ -51,16 +56,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NoteListScreen(
-    uiState: BaseUiState = rememberUiState(),
-    noteListState: State<List<Note>> = remember { mutableStateOf(emptyList()) },
-    moveToCamera: () -> Unit = {},
-    moveToEdit: () -> Unit = {},
-    onClickNote: (Long) -> Unit = {},
-    onRemoveNote: (Note) -> Unit = {},
-    onCancelRemove: () -> Unit = {}
+    noteListState: NoteListState = rememberNoteListState()
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
-
     Scaffold(
         topBar = {
             DropMenuTopAppBar(
@@ -69,23 +66,23 @@ fun NoteListScreen(
                 dropMenuItems = listOf(
                     DropMenuState(
                         name = "직접 작성하기",
-                        onClick = moveToEdit
+                        onClick = noteListState.moveToEdit
                     ),
                     DropMenuState(
                         name = "사진으로 추가하기",
-                        onClick = moveToCamera
+                        onClick = noteListState.moveToCamera
                     )
                 )
             )
         },
         snackbarHost = {
             SnackbarHost(
-                hostState = snackBarHostState,
+                hostState = noteListState.snackBarHostState,
                 modifier = Modifier.padding(16.dp)
             ) { data ->
                 Snackbar(
                     action = {
-                        TextButton(onClick = onCancelRemove) {
+                        TextButton(onClick = noteListState.onCancelRemove) {
                             data.visuals.actionLabel?.let { Text(text = it) }
                         }
                     }
@@ -96,10 +93,10 @@ fun NoteListScreen(
         }
     ) { paddingValues ->
 
-        if(noteListState.value.isEmpty()) {
+        if(noteListState.noteListState.value.isEmpty()) {
             EmptyNoteItem(
                 Modifier.padding(paddingValues = paddingValues),
-                onClick = moveToCamera
+                onClick = noteListState.moveToCamera
             )
             return@Scaffold
         }
@@ -113,20 +110,20 @@ fun NoteListScreen(
                 bottom = 16.dp
             )
         ) {
-            items(items = noteListState.value, key = { note -> note.id }) { item ->
+            items(items = noteListState.noteListState.value, key = { note -> note.id }) { item ->
                 NoteItem(
                     note = item,
                     removeNote = {
-                        onRemoveNote(item)
-                        uiState.scope.launch {
-                            snackBarHostState.showSnackbar(
+                        noteListState.onRemoveNote(item)
+                        noteListState.uiState.scope.launch {
+                            noteListState.snackBarHostState.showSnackbar(
                                 message = "삭제 완료",
                                 actionLabel = "실행 취소",
                                 duration = SnackbarDuration.Short
                             )
                         }
                     },
-                    onClickItem = { onClickNote(item.id) }
+                    onClickItem = { noteListState.onClickNote(item.id) }
                 )
             }
         }
