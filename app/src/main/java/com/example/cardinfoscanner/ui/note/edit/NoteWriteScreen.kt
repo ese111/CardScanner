@@ -4,29 +4,24 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.cardinfoscanner.stateholder.note.edit.NoteEditState
-import com.example.cardinfoscanner.stateholder.note.edit.rememberNoteEditState
+import com.example.cardinfoscanner.stateholder.note.edit.NoteWriteState
+import com.example.cardinfoscanner.stateholder.note.edit.rememberNoteWriteState
 import com.example.cardinfoscanner.ui.common.MenuTextTopAppBar
 import com.example.cardinfoscanner.ui.common.NormalDialog
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NoteEditScreen(
-    noteState: NoteEditState = rememberNoteEditState(),
-    onClickSave: () -> Unit = {},
-    onClickCancel: () -> Unit = {},
+fun NoteWriteScreen(
+    noteState: NoteWriteState = rememberNoteWriteState(),
+    saveNote:() -> Unit = {},
+    onChangeCancelDialog: (Boolean) -> Unit = {},
+    onChangeSaveDialog: (Boolean) -> Unit = {},
+    onClickUpButton: () -> Unit = {},
     onTitleChange: (String) -> Unit = {},
     onContentChange: (String) -> Unit = {},
     onTitleFocusChanged: (Boolean) -> Unit = {},
-    onContentFocusChanged: (Boolean) -> Unit = {},
-    showSaveDialogState: () -> Unit = {},
-    showCancelDialogState: () -> Unit = {},
-    onDismissSaveDialog: () -> Unit = {},
-    onDismissCancelDialog: () -> Unit = {}
+    onContentFocusChanged: (Boolean) -> Unit = {}
 ) {
     BackHandler(enabled = noteState.isVisible.value) {
         noteState.uiState.scope.launch {
@@ -34,38 +29,35 @@ fun NoteEditScreen(
         }
     }
 
-    if(noteState.cancelDialogState.dialogState.value) {
+    if(noteState.saveDialogState.dialogState.value) {
         NormalDialog(
-            title = "저장하지 않습니다.",
-            phrase = "정말로 취소하시겠습니까?",
+            title = "저장하시겠습니까?",
+            phrase = "메모는 수정, 삭제가 가능합니다.",
             confirmText = "확인",
             dismissText = "취소",
-            onConfirm = {
-                onDismissCancelDialog()
-                onClickCancel()
-            },
-            onDismiss = onDismissCancelDialog
+            onConfirm = saveNote,
+            onDismiss = { onChangeSaveDialog(false) }
         )
     }
-    if (noteState.saveDialogState.dialogState.value) {
+    if(noteState.cancelDialogState.dialogState.value) {
         NormalDialog(
-            title = "저장하기",
-            phrase = "정말로 저장하시겠습니까?",
+            title = "작성을 취소하시겠습니까?",
+            phrase = "저장되지 않은 메모는 복구되지 않습니다.",
             confirmText = "확인",
             dismissText = "취소",
-            onConfirm = { onClickSave() },
-            onDismiss = onDismissSaveDialog
+            onConfirm = onClickUpButton,
+            onDismiss = { onChangeCancelDialog(false) }
         )
     }
 
     Scaffold(
         topBar = {
             MenuTextTopAppBar(
-                title = "Note",
+                title = "NoteWrite",
                 backButtonVisible = true,
-                onClickBackButton = showCancelDialogState,
                 menuText = "저장",
-                onClickMenuButton = showSaveDialogState
+                onClickBackButton = { onChangeCancelDialog(true) },
+                onClickMenuButton = { onChangeSaveDialog(true) }
             )
         }
     ) { paddingValues ->
@@ -79,10 +71,4 @@ fun NoteEditScreen(
             onContentFocusChanged = onContentFocusChanged
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultNoteDetailPreview() {
-    NoteEditScreen(onClickCancel = {}, onClickSave = {})
 }

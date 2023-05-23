@@ -6,10 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.cardinfoscanner.stateholder.app.AppState
 
 interface Destination {
     val route: String
-    val screen: @Composable (navController: NavHostController, arguments: Bundle, mainViewModel: MainViewModel?) -> Unit
+    val screen: @Composable (navController: NavHostController, arguments: Bundle, appState: AppState?) -> Unit
 
     companion object {
         internal const val cameraHomeRoute = "home/cam"
@@ -19,6 +20,7 @@ interface Destination {
         internal const val noteListRout = "home/note/list"
         internal const val noteEditRout = "home/note/edit"
         internal const val noteDetailRout = "home/note/detail"
+        internal const val noteWriteRout = "home/note/write"
         internal const val settingHomeRout = "home/setting"
         internal const val settingRout = "home/setting/main"
     }

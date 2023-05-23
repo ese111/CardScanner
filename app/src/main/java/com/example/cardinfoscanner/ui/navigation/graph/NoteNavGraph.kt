@@ -4,26 +4,28 @@ import androidx.compose.runtime.Stable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.example.cardinfoscanner.Destination
-import com.example.cardinfoscanner.MainViewModel
-import com.example.cardinfoscanner.ui.navigation.destination.NoteDetailDestination
-import com.example.cardinfoscanner.ui.navigation.destination.NoteEditDestination
-import com.example.cardinfoscanner.ui.navigation.destination.NotesDestination
-import com.example.cardinfoscanner.ui.note.detail.NoteDetailScreen
+import com.example.cardinfoscanner.stateholder.app.AppState
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteDetailDestination
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteEditDestination
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteListDestination
+import com.example.cardinfoscanner.ui.navigation.destination.note.NoteWriteDestination
 
 @Stable
 fun NavGraphBuilder.noteGraph(
     navController: NavHostController,
-    mainViewModel: MainViewModel
+    appState: AppState
 ) {
     composable(route = Destination.noteListRout) {
-        NotesDestination.screen(navController, it.arguments, mainViewModel)
+        NoteListDestination.screen(navController, it.arguments, appState)
     }
     composable(route = NoteEditDestination.routeWithArgs, arguments = NoteEditDestination.arguments) {
-        NoteEditDestination.screen(navController, it.arguments, mainViewModel)
+        NoteEditDestination.screen(navController, it.arguments, appState)
     }
     composable(route = NoteDetailDestination.routeWithArgs, arguments = NoteDetailDestination.arguments) {
-        NoteDetailDestination.screen(navController, it.arguments, mainViewModel)
+        NoteDetailDestination.screen(navController, it.arguments, appState)
+    }
+    composable(route = NoteWriteDestination.route) {
+        NoteWriteDestination.screen(navController, it.arguments, appState)
     }
 }

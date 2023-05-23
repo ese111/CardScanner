@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -48,18 +49,9 @@ fun BasicTopAppBar(
         },
         navigationIcon = {
             if (backButtonVisible) {
-                Row {
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        modifier = Modifier
-                            .clickable {
-                                onClickBackButton()
-                            }
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
+                TopAppBarBackButton(
+                    onClickBackButton = onClickBackButton
+                )
             }
         }
     )
@@ -82,34 +74,71 @@ fun MenuIconTopAppBar(
         },
         navigationIcon = {
             if (backButtonVisible) {
-                Row {
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        modifier = Modifier
-                            .clickable {
-                                onClickBackButton()
-                            }
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
+                TopAppBarBackButton(
+                    onClickBackButton = onClickBackButton
+                )
             }
         },
         actions = {
-            Row {
-                Icon(
-                    painter = menuIcon,
-                    contentDescription = "Menu",
-                    modifier = Modifier
-                        .clickable {
-                            onClickMenuButton()
-                        }
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-            }
+            TopAppBarMenuButton(
+                menuIcon = menuIcon,
+                onClickMenuButton = onClickMenuButton
+            )
         }
     )
+}
+
+@Composable
+private fun TopAppBarBackButton(
+    onClickBackButton: () -> Unit = {}
+) {
+    Row {
+        Spacer(modifier = Modifier.width(10.dp))
+        Icon(
+            imageVector = Icons.Filled.ArrowBack,
+            contentDescription = "Back",
+            modifier = Modifier
+                .clickable {
+                    onClickBackButton()
+                }
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+    }
+}
+
+@Composable
+private fun TopAppBarMenuButton(
+    menuIcon: Painter = painterResource(id = R.drawable.ic_menu),
+    onClickMenuButton: () -> Unit = {}
+) {
+    Row {
+        Icon(
+            painter = menuIcon,
+            contentDescription = "Menu",
+            modifier = Modifier
+                .clickable {
+                    onClickMenuButton()
+                }
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+    }
+}
+@Composable
+private fun TopAppBarMenuButton(
+    menuIcon: ImageVector = Icons.Filled.Menu,
+    onClickMenuButton: () -> Unit = {}
+) {
+    Row {
+        Icon(
+            imageVector = menuIcon,
+            contentDescription = "Menu",
+            modifier = Modifier
+                .clickable {
+                    onClickMenuButton()
+                }
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+    }
 }
 
 data class DropMenuState(
@@ -121,12 +150,10 @@ data class DropMenuState(
 fun DropMenuTopAppBar(
     title: String,
     backButtonVisible: Boolean = false,
-    menuIcon: Painter = rememberVectorPainter(image = Icons.Filled.Menu),
+    menuIcon: ImageVector = Icons.Filled.Menu,
     dropMenuItems: List<DropMenuState> = emptyList(),
     onClickBackButton: () -> Unit = {},
-    dropMenuState: TopBarDropMenuState = rememberDropMenuState(),
-    openDropMenu: () -> Unit = {},
-    closeDropMenu: () -> Unit = {}
+    dropMenuState: TopBarDropMenuState = rememberDropMenuState()
 ) {
     Timber.i("dropMenuState.dropMenuState.value : ${dropMenuState.dropMenuState.value}")
     Box(
@@ -165,28 +192,16 @@ fun DropMenuTopAppBar(
             },
             navigationIcon = {
                 if (backButtonVisible) {
-                    Row {
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            modifier = Modifier
-                                .clickable { onClickBackButton() }
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                    }
+                    TopAppBarBackButton(
+                        onClickBackButton = onClickBackButton
+                    )
                 }
             },
             actions = {
-                Row {
-                    Icon(
-                        painter = menuIcon,
-                        contentDescription = "Menu",
-                        modifier = Modifier
-                            .clickable { dropMenuState.openDropMenu() }
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
+                TopAppBarMenuButton(
+                    menuIcon = menuIcon,
+                    onClickMenuButton = dropMenuState.openDropMenu
+                )
             }
         )
     }

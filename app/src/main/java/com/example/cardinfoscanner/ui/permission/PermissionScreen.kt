@@ -47,7 +47,7 @@ fun CameraPermissionBottomSheet(
     ) {
         Column (
             modifier = Modifier
-                .padding(12.dp),
+                .padding(25.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
@@ -70,9 +70,9 @@ fun CameraPermissionBottomSheet(
 private fun PermissionTitle(shouldShowRationale: Boolean) {
     Text(
         text = if (shouldShowRationale) {
-            "카메라 권한이 중요합니다. 카메라 권한을 허가해주세요!"
+            "카메라 권한이 중요합니다.\n카메라 권한을 허가해주세요!"
         } else {
-            "카메라 권한을 허용해주셔야 유용한 앱사용이 가능합니다."
+            "카메라 권한을 허용해주셔야\n유용한 앱사용이 가능합니다."
         }
     )
 }
