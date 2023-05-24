@@ -116,4 +116,7 @@ dependencies {
     // OpenSource
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
 
+    // SplashScreen
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
 }
