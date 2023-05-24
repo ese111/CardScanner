@@ -11,7 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.cardinfoscanner.stateholder.app.rememberAppState
 import com.example.cardinfoscanner.ui.main.CardScannerApp
 import com.example.cardinfoscanner.ui.theme.CardInfoScannerTheme
@@ -33,9 +36,24 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+    companion object {
+        internal const val SplashWaitTime = 2000L
+    }
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        var keepOnSplash = false
+
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                delay(SplashWaitTime)
+                keepOnSplash = true
+            }
+        }
+        splashScreen.setKeepOnScreenCondition {
+            keepOnSplash
+        }
         setContent {
             CardInfoScannerTheme {
                 Surface(
