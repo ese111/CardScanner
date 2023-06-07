@@ -13,6 +13,7 @@ class LocalNoteRepository @Inject constructor(
     override fun getNotList(): Flow<List<Note>> = noteDataSource.getNoteList()
     override suspend fun setNoteList(note: Note) = noteDataSource.setNoteList(note)
     override suspend fun removeNote(note: Note) = noteDataSource.removeNote(note)
+    override suspend fun removeAllNote(list: List<Note>) = noteDataSource.removeAllNote(list)
     override suspend fun cancelRemove() = noteDataSource.cancelRemove()
     override fun getNoteDetail(id: Long) = noteDataSource.getNoteDetail(id)
     override suspend fun saveNote(note: Note) = noteDataSource.saveNote(note)

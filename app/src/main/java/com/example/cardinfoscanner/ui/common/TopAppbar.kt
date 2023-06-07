@@ -19,8 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -249,10 +251,61 @@ fun MenuTextTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemSelectModeAppBar(
+    itemCount: Int = 0,
+    onClickBackButton: () -> Unit = {},
+    onRemove: () -> Unit = {},
+    menuText: String = "삭제"
+) {
+    TopAppBar(
+        title = {
+            Text(
+                text = itemCount.toString(),
+                color = Color.White
+            )
+        },
+        navigationIcon = {
+            Row {
+                Spacer(modifier = Modifier.width(10.dp))
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .clickable { onClickBackButton() },
+                    tint = Color.White
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+        },
+        actions = {
+            Row {
+                Text(
+                    modifier = Modifier.clickable { onRemove() },
+                    text = menuText,
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Gray
+        )
+    )
+}
+
 @Composable
 @Preview(showBackground = true)
 private fun TopAppBarPreview() {
     BasicTopAppBar(title = "Note", backButtonVisible = true)
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun ItemSelectModeAppBarPreview() {
+    ItemSelectModeAppBar()
 }
 
 @Composable
@@ -286,5 +339,4 @@ private fun DropMenuTopAppBarPreview() {
             
         }
     }
-
 }

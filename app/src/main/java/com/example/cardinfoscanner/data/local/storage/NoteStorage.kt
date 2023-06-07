@@ -56,6 +56,17 @@ class NoteStorage @Inject constructor(
         noteDataStore.setNoteList(Json.encodeToString(map.values.toList()))
     }
 
+    suspend fun removeAllNote(list: List<Note>) {
+        val map = mutableMapOf<Long, Note>()
+        setCachedOriginList()
+        map.putAll(noteMap.value)
+        list.forEach { note ->
+            map.remove(note.id)
+        }
+        Timber.tag("AppTest").d("removeNote : $map")
+        noteDataStore.setNoteList(Json.encodeToString(map.values.toList()))
+    }
+
     suspend fun saveNote(note: Note) {
         val map = mutableMapOf<Long, Note>()
         setCachedOriginList()

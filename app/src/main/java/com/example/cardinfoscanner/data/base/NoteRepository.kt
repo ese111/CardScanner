@@ -11,6 +11,8 @@ interface NoteRepository {
 
     suspend fun removeNote(note: Note)
 
+    suspend fun removeAllNote(list: List<Note>)
+
     suspend fun cancelRemove()
 
     fun getNoteDetail(id: Long): NoteDetailUiState
