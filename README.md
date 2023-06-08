@@ -16,6 +16,7 @@ Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigati
 <img src="https://github.com/ese111/CardScanner/blob/main/screen1.png" width="24%" height="24%">
 <img src="https://github.com/ese111/CardScanner/blob/main/screen_permission.png" width="24%" height="24%">
 <img src="https://github.com/ese111/CardScanner/blob/main/edit.png" width="24%" height="24%">
+<img src="https://github.com/ese111/CardScanner/blob/main/scan_memo_select.gif" width="24%" height="24%">
 </p>                                                                                            
 
 ## Introduce
