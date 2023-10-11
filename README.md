@@ -8,7 +8,7 @@
 
 # 스캔 메모 app
 ## Skill
-Clean Architecture + Dependency injection with Hilt + Jetpack Compose + Navigation + ML kit + CameraX
+App Architecture + Dependency injection with Hilt + Jetpack Compose + Navigation + ML kit + CameraX
 
 <p align="left">
 <img src="https://github.com/ese111/CardScanner/blob/main/splash_screen.png" width="24%" height="24%">
